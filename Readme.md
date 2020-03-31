@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Владимир](https://up.htmlacademy.ru/ecmascript/11/user/1176969).
-* Наставник: `Неизвестно`.
+* Наставник: [Юлия](https://up.htmlacademy.ru/ecmascript/11/user/11886).
 
 ---
 
