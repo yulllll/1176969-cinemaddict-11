@@ -1,15 +1,15 @@
-const path = require(`path`);
+const path = require('path');
 
 module.exports = {
-  mode: `development`, // Режим сборки
-  entry: `./src/main.js`, // Точка входа приложения
+  mode: 'development', // Режим сборки
+  entry: './src/main.js', // Точка входа приложения
   output: { // Настройка выходного файла
-    filename: `bundle.js`,
-    path: path.join(__dirname, `public`)
+    filename: 'bundle.js',
+    path: path.join(__dirname, 'public')
   },
-  devtool: `source-map`, // Подключаем карту исходников
+  devtool: 'source-map', // Подключаем карту исходников
   devServer: {
-    contentBase: path.join(__dirname, `public`),
+    contentBase: path.join(__dirname, 'public'),
     watchContentBase: true
   }
 };
