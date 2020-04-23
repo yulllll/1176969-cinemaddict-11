@@ -12,12 +12,15 @@ import {generateFilters} from "./mock/filters.js";
 
 const FILMS_CARD_COUNT_DEFAULT = 1;
 const FILMS_CARD_COUNT = 25;
+const FILMS_CARD_COUNT_MIN = 1;
 const SHOWING_MOVIE_CARDS_COUNT_ON_START = 5;
 const SHOWING_MOVIE_CARDS_COUNT_BY_BUTTON = 5;
 
 const movieCards = generateMovieCards(FILMS_CARD_COUNT);
 const movieFilters = generateFilters(movieCards);
-
+// --------------------------------------- В консоле -----------------------------
+// console.log(movieCards);
+// --------------------------------------- В консоле -----------------------------
 const siteBodyElement = document.querySelector(`body`);
 const siteHeaderElement = siteBodyElement.querySelector(`.header`);
 const siteMainElement = siteBodyElement.querySelector(`.main`);
@@ -42,6 +45,9 @@ let showingMovieCardsCount = SHOWING_MOVIE_CARDS_COUNT_ON_START;
 movieCards.slice(0, showingMovieCardsCount)
   .forEach((movieCard) => render(filmsContainerElement, createFilmCardTemplate(movieCard)));
 
+// Копируем массив основных кинокарточек для попапа
+let popupMovieCards = movieCards.slice(0, showingMovieCardsCount);
+
 // Рендерим кнопку показать еще
 render(filmsListElement, createShowMoreFilmsTemplate());
 const showMoreButton = filmsListElement.querySelector(`.films-list__show-more`);
@@ -50,6 +56,9 @@ const onShowMoreButtonClick = () => {
   const prevMovieCardsCount = showingMovieCardsCount;
   showingMovieCardsCount = showingMovieCardsCount + SHOWING_MOVIE_CARDS_COUNT_BY_BUTTON;
 
+  // Увеличиваем скопированный массив каждый раз при нажатии "показать больше"
+  popupMovieCards = movieCards.slice(0, showingMovieCardsCount);
+
   movieCards.slice(prevMovieCardsCount, showingMovieCardsCount)
     .forEach((movieCard) => render(filmsContainerElement, createFilmCardTemplate(movieCard)));
 
@@ -57,107 +66,190 @@ const onShowMoreButtonClick = () => {
     showMoreButton.remove();
     showMoreButton.removeEventListener(`click`, onShowMoreButtonClick);
   }
+  initPopup();
 };
 showMoreButton.addEventListener(`click`, onShowMoreButtonClick);
 
-// Рендерим разделы для экстракарточек
-render(filmsBlockElement, createFilmsListExtraTemplate(`Top rated`));
-render(filmsBlockElement, createFilmsListExtraTemplate(`Most commented`));
+// Функция работы попапа
+const initPopup = () => {
+  // Находим все отредеренные карточки фильмов
+  const movieCardsElement = document.querySelectorAll(`.film-card`);
 
-// Копируем массив основных кинокарточек
-const allMovieCards = movieCards.slice();
+  // Цикл по всем карточкам с индексом итерации и элементом массива для открытия попапа
+  for (const [index, card] of Array.from(movieCardsElement).entries()) {
+    const moviePoster = card.querySelector(`.film-card__poster`);
+    const movieTitle = card.querySelector(`.film-card__title`);
+    const movieComment = card.querySelector(`.film-card__comments`);
 
-// Получаем список экстразделов
-const filmsListExtraElement = filmsBlockElement.querySelectorAll(`.films-list--extra`);
-// Создаём массивы рейтинга и комментариев для получения максимального значения
-const movieRatings = movieCards.map((item) => item.rating);
-const movieComments = movieCards.map((item) => item.comments);
-// Получаем максимальное значение рейтинга и комментариев для экстракарточек
-const getPopularValue = (value) => {
-  const maxValue = value.reduce((acc, it, i) => {
-    return value[acc] > it ? acc : i;
-  }, 0);
-
-  const nextValue = value.reduce((acc, it, i) => {
-    if (maxValue !== i) {
-      return value[acc] > it ? acc : i;
-    } else {
-      return i - 1;
-    }
-  }, 0);
-
-  return {
-    maxValue,
-    nextValue,
-  };
-};
-// Рендерим карточки в экстраразделе
-for (const [index, item] of Array.from(filmsListExtraElement).entries()) {
-  const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
-
-  if (!index) {
-    render(filmsExtraContainerElement, createFilmCardTemplate(movieCards[getPopularValue(movieRatings).maxValue]));
-    render(filmsExtraContainerElement, createFilmCardTemplate(movieCards[getPopularValue(movieRatings).nextValue]));
-    // Добавляем в скопированный массив экстракарточки
-    allMovieCards.push(movieCards[getPopularValue(movieRatings).maxValue]);
-    allMovieCards.push(movieCards[getPopularValue(movieRatings).nextValue]);
-  } else {
-    render(filmsExtraContainerElement, createFilmCardTemplate(movieCards[getPopularValue(movieComments).maxValue]));
-    render(filmsExtraContainerElement, createFilmCardTemplate(movieCards[getPopularValue(movieComments).nextValue]));
-    // Добавляем в скопированный массив экстракарточки
-    allMovieCards.push(movieCards[getPopularValue(movieComments).maxValue]);
-    allMovieCards.push(movieCards[getPopularValue(movieComments).nextValue]);
-  }
-}
-
-// Находим все отредеренные карточки фильмов
-const moviesCards = document.querySelectorAll(`.film-card`);
-// Цикл по всем карточкам с индексом итерации и элементом массива для открытия попапа
-for (const [index, card] of Array.from(moviesCards).entries()) {
-  const moviePoster = card.querySelector(`.film-card__poster`);
-  const movieTitle = card.querySelector(`.film-card__title`);
-  const movieComment = card.querySelector(`.film-card__comments`);
-
-  const closePopup = (popup) => {
-    // Ищем кнопку закрытия
-    const closeButton = popup.querySelector(`.film-details__close-btn`);
-    // Функция-слушатель для кнопки закрытия
-    const onCloseButtonClick = () => {
-      popup.remove();
-      // card.removeEventListener(`click`, onMovieCardClick);
-    };
-    // Функция-слушатель для ESC
-    const onPopupPressEsc = (evt) => {
-      if (evt.keyCode === 27) {
+    const initCloseButtonPopup = (popup) => {
+      // Ищем кнопку закрытия
+      const closeButton = popup.querySelector(`.film-details__close-btn`);
+      // Функция-слушатель для кнопки закрытия
+      const onCloseButtonClick = () => {
         popup.remove();
-        // card.removeEventListener(`click`, onMovieCardClick);
+      };
+      // Функция-слушатель для ESC
+      const onPopupPressEsc = (evt) => {
+        if (evt.keyCode === 27) {
+          popup.remove();
+        }
+        document.removeEventListener(`keydown`, onPopupPressEsc);
+      };
+      // Если попап открыт, то включаем ESC
+      if (popup) {
+        document.addEventListener(`keydown`, onPopupPressEsc);
       }
-      document.removeEventListener(`keydown`, onPopupPressEsc);
+      // Событие клик для кнопки закрытия попапа
+      closeButton.addEventListener(`click`, onCloseButtonClick);
+      // Функция-слушатель для закрытия и открытия нового попапа, если попап открыт
+      const onMovieCardClick = (evt) => {
+        const moviePopups = document.querySelectorAll(`.film-details`);
+
+        if (evt.target.closest(`.film-details`) !== popup && moviePopups.length > 1) {
+          moviePopups[1].remove();
+          // document.removeEventListener(`click`, onMovieCardClick);
+        }
+      };
+
+      document.addEventListener(`click`, onMovieCardClick);
     };
-    // Если попап открыт, то включаем ESC
-    if (popup) {
-      document.addEventListener(`keydown`, onPopupPressEsc);
+
+    const onMovieCardClick = (evt) => {
+      // Если клик по посту или названию или комментарию - ренедрим попап текущей карточки
+      if (evt.target === moviePoster || evt.target === movieTitle || evt.target === movieComment) {
+        // Объединяем откртые при клике на "показать еще" и полученные экстаракарточки
+        const allMovieCards = popupMovieCards.concat(extraMovieCards);
+
+        render(siteBodyElement.querySelector(`.footer`),
+            createFilmDetailsPopupTemplate(allMovieCards[index]),
+            FILMS_CARD_COUNT_DEFAULT, `afterend`);
+
+        const moviePopup = document.querySelector(`.film-details`);
+        const commentsContentPopup = moviePopup.querySelector(`.form-details__bottom-container`);
+        const commentsList = commentsContentPopup.querySelector(`.film-details__comments-list`);
+
+        allMovieCards[index].comments.forEach((it) => {
+          render(commentsList, createMovieCommentsTemplate(it));
+        });
+        // Включаем функцию закрытия окна и передаём в неё попап
+        initCloseButtonPopup(moviePopup);
+      }
+    };
+    // Открываем попап
+    card.addEventListener(`click`, onMovieCardClick);
+  }
+};
+
+// Массив для экстракарточек
+const extraMovieCards = [];
+// Если кинокарточки есть
+if (movieCards.length > FILMS_CARD_COUNT_MIN) {
+  // Получаем максимальное значение рейтинга для экстракарточек
+  const getIndexRatingCards = (cards) => {
+    const startValue = [0];
+    const maxIndexes = [0];
+
+    for (const [index] of cards.entries()) {
+      if (cards[index].rating > startValue[startValue.length - 1]) {
+        startValue.push(cards[index].rating);
+        maxIndexes.push(index);
+
+        continue;
+      }
+      if (cards[index].rating > startValue[startValue.length - 2]) {
+        startValue[startValue.length - 2] = cards[index].rating;
+        maxIndexes[maxIndexes.length - 2] = index;
+      }
     }
-    // Событие клик для кнопки закрытия попапа
-    closeButton.addEventListener(`click`, onCloseButtonClick);
+
+    return {
+      maxIndex: maxIndexes.pop(),
+      nextIndex: maxIndexes.pop(),
+    };
   };
+  // Получаем максимальное значение комментариев для экстракарточек
+  const getIndexCommentedCards = (cards) => {
+    const startValue = [0];
+    const maxIndexes = [0];
 
-  const onMovieCardClick = (evt) => {
-    // Если клик по посту или названию или комментарию - ренедрим попап текущей карточки
-    if (evt.target === moviePoster || evt.target === movieTitle || evt.target === movieComment) {
-      render(siteBodyElement.querySelector(`.footer`), createFilmDetailsPopupTemplate(allMovieCards[index]), FILMS_CARD_COUNT_DEFAULT, `afterend`);
+    for (const [index] of cards.entries()) {
+      if (cards[index].comments.length > startValue[startValue.length - 1]) {
+        startValue.push(cards[index].comments.length);
+        maxIndexes.push(index);
 
-      const moviePopup = document.querySelector(`.film-details`);
-      const commentsContentPopup = moviePopup.querySelector(`.form-details__bottom-container`);
-      const commentsList = commentsContentPopup.querySelector(`.film-details__comments-list`);
-
-      allMovieCards[index].comments.forEach((it) => {
-        render(commentsList, createMovieCommentsTemplate(it));
-      });
-      // Вызываем функцию закрытия окна и передаём в неё попап
-      closePopup(moviePopup);
+        continue;
+      }
+      if (cards[index].comments.length > startValue[startValue.length - 2]) {
+        startValue[startValue.length - 2] = cards[index].comments.length;
+        maxIndexes[maxIndexes.length - 2] = index;
+      }
     }
+
+    return {
+      maxIndex: maxIndexes.pop(),
+      nextIndex: maxIndexes.pop(),
+    };
   };
-  // Открываем попап
-  card.addEventListener(`click`, onMovieCardClick);
+  // Самые популярные фильмы
+  const popularsRatingsValue = getIndexRatingCards(movieCards); // topRated
+  // Самые комментируемые фильмы
+  const popularsCommentsValue = getIndexCommentedCards(movieCards); // mostComments
+
+
+  // Рендерим разделы для экстракарточек
+  render(filmsBlockElement, createFilmsListExtraTemplate(`Top rated`));
+  render(filmsBlockElement, createFilmsListExtraTemplate(`Most commented`));
+
+  // Получаем список экстразделов
+  const filmsListExtraElement = filmsBlockElement.querySelectorAll(`.films-list--extra`);
+  // Рендерим карточки в экстраразделе и добавляем их в общий массив карточек
+  for (const [index, item] of Array.from(filmsListExtraElement).entries()) {
+    const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
+    // Если первый список (Top rated)
+    if (!index) {
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[popularsRatingsValue.maxIndex]));
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[popularsRatingsValue.nextIndex]));
+
+      extraMovieCards.push(movieCards[popularsRatingsValue.maxIndex]);
+      extraMovieCards.push(movieCards[popularsRatingsValue.nextIndex]);
+      // Если второй список (Most commented)
+    } else {
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[popularsCommentsValue.maxIndex]));
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[popularsCommentsValue.nextIndex]));
+
+      extraMovieCards.push(movieCards[popularsCommentsValue.maxIndex]);
+      extraMovieCards.push(movieCards[popularsCommentsValue.nextIndex]);
+    }
+  }
+  initPopup();
+} else if (movieCards.length === FILMS_CARD_COUNT_MIN) {
+  // Рендерим разделы для экстракарточек
+  render(filmsBlockElement, createFilmsListExtraTemplate(`Top rated`));
+  render(filmsBlockElement, createFilmsListExtraTemplate(`Most commented`));
+
+  // Получаем список экстразделов
+  const filmsListExtraElement = filmsBlockElement.querySelectorAll(`.films-list--extra`);
+
+  // Рендерим карточки в экстраразделе и добавляем их в общий массив карточек
+  for (const [index, item] of Array.from(filmsListExtraElement).entries()) {
+    const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
+
+    // Если первый список (Top rated)
+    if (!index) {
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[0]));
+      extraMovieCards.push(movieCards[0]);
+
+      // Если второй список (Most commented)
+    } else {
+      render(filmsExtraContainerElement,
+          createFilmCardTemplate(movieCards[0]));
+      extraMovieCards.push(movieCards[0]);
+    }
+  }
+  initPopup();
 }

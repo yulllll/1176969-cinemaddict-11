@@ -1,6 +1,8 @@
-import {getRandomIndex, getRandomIntervalNumber} from "../utils.js";
+import {getRandomItem, getRandomIndex, getRandomIntervalNumber} from "../utils.js";
 import {generateComments} from "./comments.js";
 
+// Количество сгенерированных участников группы
+const MOVIE_CREW_GENRE_COUNT = 3;
 // Данные для мокков
 const Ratings = {
   MIN: 1,
@@ -89,6 +91,18 @@ const ageRestrictions = [
   `18+`
 ];
 
+// Геенируем данные для сценаристов, актёров и жанра
+const createMovieСrew = (names) => {
+  const movieCrew = [];
+  const initCloneNames = names.slice();
+  for (let i = 0; i < MOVIE_CREW_GENRE_COUNT; i++) {
+    const randomName = getRandomIndex(initCloneNames);
+    movieCrew.push(initCloneNames[randomName]);
+    initCloneNames.splice(randomName, 1);
+  }
+  return movieCrew;
+};
+
 // Получаем произвольную дату
 const getRandomDay = () => {
   const date = new Date();
@@ -109,29 +123,33 @@ const generateMovieCard = () => {
     isWatchlist: Math.random() > 0.5,
     isWatched: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
-    poster: getRandomIndex(posters),
-    title: getRandomIndex(titles),
+    poster: getRandomItem(posters),
+    title: getRandomItem(titles),
     rating: getRandomIntervalNumber(Ratings.MIN, Ratings.MAX).toFixed(1),
     year: Math.floor(getRandomIntervalNumber(Years.MIN, Years.MAX)),
-    duration: getRandomIndex(durations),
-    genre: getRandomIndex(genres),
-    description: getRandomIndex(descriptions),
-    // comments: movieComments.length,
+    duration: getRandomItem(durations),
+    genre: createMovieСrew(genres),
+    description: getRandomItem(descriptions),
     comments: generateComments(),
-    director: getRandomIndex(directors),
-    writers: getRandomIndex(writers),
-    actors: getRandomIndex(actors),
+    director: getRandomItem(directors),
+    writers: createMovieСrew(writers),
+    actors: createMovieСrew(actors),
     releaseDate: getRandomDay(),
-    country: getRandomIndex(countries),
-    age: getRandomIndex(ageRestrictions),
+    country: getRandomItem(countries),
+    age: getRandomItem(ageRestrictions),
   };
 };
 
+
 // Генерируем карточки фильмов в массив
 const generateMovieCards = (count) => {
-  return new Array(count)
-    .fill(``)
-    .map(generateMovieCard);
+  const cards = [];
+
+  for (let i = 0; i < count; i++) {
+    cards.push(generateMovieCard());
+  }
+  return cards;
 };
+
 // Экспортируем полученный массив фильмов
 export {generateMovieCards};

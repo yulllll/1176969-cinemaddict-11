@@ -1,10 +1,10 @@
-import {getRandomIndex, getRandomIntervalNumber} from "../utils";
+import {getRandomItem, getRandomIntervalNumber} from "../utils";
 
 // Данные для мокков
 const emojis = [
   `smile`,
   `sleeping`,
-  `puke`, // пук)
+  `puke`,
   `angry`
 ];
 const texts = [
@@ -22,7 +22,7 @@ const dates = [
   `2 days ago`,
   `Today`
 ];
-const CommentsLength = {
+const сommentsLength = {
   MIN: 0,
   MAX: 5,
 };
@@ -30,20 +30,22 @@ const CommentsLength = {
 // Создаём комментарий
 const generateComment = () => {
   return {
-    emoji: getRandomIndex(emojis),
-    text: getRandomIndex(texts),
-    autor: getRandomIndex(autors),
-    date: getRandomIndex(dates),
+    emoji: getRandomItem(emojis),
+    text: getRandomItem(texts),
+    autor: getRandomItem(autors),
+    date: getRandomItem(dates),
   };
 };
 
 // Создаём массив комметариев
 const generateComments = () => {
-  const randomIndex = Math.floor(getRandomIntervalNumber(CommentsLength.MIN, CommentsLength.MAX));
+  const randomIndex = Math.floor(getRandomIntervalNumber(сommentsLength.MIN, сommentsLength.MAX));
+  const comments = [];
 
-  return new Array(randomIndex)
-    .fill(``)
-    .map(generateComment);
+  for (let i = 0; i < randomIndex; i++) {
+    comments.push(generateComment());
+  }
+  return comments;
 };
 
 export {generateComments};

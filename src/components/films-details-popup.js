@@ -1,5 +1,14 @@
 const createFilmDetailsPopupTemplate = (movieCard) => {
-  const {poster, title, rating, duration, genre, description, comments, director, writers, actors, releaseDate, country, age} = movieCard; // + comments
+  const {poster, title, rating, duration, genre, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
+
+  const createGenreTemplate = (genres) => {
+    const genresTemplate = [];
+
+    for (const genreItem of genres) {
+      genresTemplate.push(`<span class="film-details__genre">${genreItem}</span>`);
+    }
+    return genresTemplate;
+  };
 
   return (
     `
@@ -35,11 +44,11 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers}</td>
+                  <td class="film-details__cell">${writers.join(`, `)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors}</td>
+                  <td class="film-details__cell">${actors.join(`, `)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
@@ -56,9 +65,7 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
                   <td class="film-details__cell">
-                    <span class="film-details__genre">${genre}</span>
-                    <span class="film-details__genre">Film-Noir</span>
-                    <span class="film-details__genre">Mystery</span></td>
+                    ${createGenreTemplate(genre).join(``)}
                 </tr>
               </tbody></table>
 
