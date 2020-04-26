@@ -1,6 +1,6 @@
 const MOVIE_DESCRIPTION_LIMIT = 140;
 
-const setActiveControls = (item) => {
+const getActiveControlClassName = (item) => {
   // Если item есть - добавляем класс
   return item ? `film-card__controls-item--active` : ``;
 };
@@ -14,8 +14,9 @@ const computeDescriptionLength = (string) => {
 };
 
 const createFilmCardTemplate = (movieCard) => {
-  const {isWatchlist, isWatched, isFavorite, poster, title, rating, year, duration, genre, description, comments = []} = movieCard; // + comments
+  const {isWatchlist, isWatched, isFavorite, poster, title, rating, year, duration, genres, description, comments = []} = movieCard; // + comments
 
+  console.log(description.length);
   return (
     `
      <article class="film-card">
@@ -24,15 +25,15 @@ const createFilmCardTemplate = (movieCard) => {
       <p class="film-card__info">
        <span class="film-card__year">${year}</span>
        <span class="film-card__duration">${duration}</span>
-       <span class="film-card__genre">${genre.splice(1, 1)}</span>
+       <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${computeDescriptionLength(description)}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
-       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${setActiveControls(isWatchlist)}">Add to watchlist</button>
-       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${setActiveControls(isWatched)}">Mark as watched</button>
-       <button class="film-card__controls-item button film-card__controls-item--favorite ${setActiveControls(isFavorite)}">Mark as favorite</button>
+       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${getActiveControlClassName(isWatchlist)}">Add to watchlist</button>
+       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${getActiveControlClassName(isWatched)}">Mark as watched</button>
+       <button class="film-card__controls-item button film-card__controls-item--favorite ${getActiveControlClassName(isFavorite)}">Mark as favorite</button>
       </form>
      </article>
     `

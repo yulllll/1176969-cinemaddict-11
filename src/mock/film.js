@@ -45,13 +45,6 @@ const genres = [
   `Cartoon`,
   `Mystery`
 ];
-const descriptions = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra.`,
-  `Aliquam id orci ut lectus varius viverra.`,
-  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`
-];
 const directors = [
   `Anthony Mann`,
   `Steven Allan Spielberg`,
@@ -128,8 +121,8 @@ const generateMovieCard = () => {
     rating: getRandomIntervalNumber(Ratings.MIN, Ratings.MAX).toFixed(1),
     year: Math.floor(getRandomIntervalNumber(Years.MIN, Years.MAX)),
     duration: getRandomItem(durations),
-    genre: createMovieСrew(genres),
-    description: getRandomItem(descriptions),
+    genres: createMovieСrew(genres),
+    description: require(`getlorem`).words(getRandomIntervalNumber(10, 35)),
     comments: generateComments(),
     director: getRandomItem(directors),
     writers: createMovieСrew(writers),

@@ -1,14 +1,5 @@
 const createFilmDetailsPopupTemplate = (movieCard) => {
-  const {poster, title, rating, duration, genre, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
-
-  const createGenreTemplate = (genres) => {
-    const genresTemplate = [];
-
-    for (const genreItem of genres) {
-      genresTemplate.push(`<span class="film-details__genre">${genreItem}</span>`);
-    }
-    return genresTemplate;
-  };
+  const {poster, title, rating, duration, genres, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
 
   return (
     `
@@ -65,7 +56,7 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
                   <td class="film-details__cell">
-                    ${createGenreTemplate(genre).join(``)}
+                    ${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``)}
                 </tr>
               </tbody></table>
 

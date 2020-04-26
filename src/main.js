@@ -76,7 +76,7 @@ const initPopup = () => {
   const movieCardsElement = document.querySelectorAll(`.film-card`);
 
   // Цикл по всем карточкам с индексом итерации и элементом массива для открытия попапа
-  for (const [index, card] of Array.from(movieCardsElement).entries()) {
+  for (const [index, card] of movieCardsElement.entries()) {
     const moviePoster = card.querySelector(`.film-card__poster`);
     const movieTitle = card.querySelector(`.film-card__title`);
     const movieComment = card.querySelector(`.film-card__comments`);
@@ -144,43 +144,26 @@ const initPopup = () => {
 const extraMovieCards = [];
 // Если кинокарточки есть
 if (movieCards.length > FILMS_CARD_COUNT_MIN) {
-  // Получаем максимальное значение рейтинга для экстракарточек
-  const getIndexRatingCards = (cards) => {
+  // Получаем максимальное значение рейтинга и комментариев для экстракарточек
+  const getIndexRatingCards = (cards, propPath) => {
     const startValue = [0];
     const maxIndexes = [0];
 
-    for (const [index] of cards.entries()) {
-      if (cards[index].rating > startValue[startValue.length - 1]) {
-        startValue.push(cards[index].rating);
+    const propNames = propPath.split(`.`);
+
+    for (const [index, card] of cards.entries()) {
+      const prop = propNames.reduce((obj, name) => {
+        return obj[name];
+      }, card);
+
+      if (prop > startValue[startValue.length - 1]) {
+        startValue.push(prop);
         maxIndexes.push(index);
 
         continue;
       }
-      if (cards[index].rating > startValue[startValue.length - 2]) {
-        startValue[startValue.length - 2] = cards[index].rating;
-        maxIndexes[maxIndexes.length - 2] = index;
-      }
-    }
-
-    return {
-      maxIndex: maxIndexes.pop(),
-      nextIndex: maxIndexes.pop(),
-    };
-  };
-  // Получаем максимальное значение комментариев для экстракарточек
-  const getIndexCommentedCards = (cards) => {
-    const startValue = [0];
-    const maxIndexes = [0];
-
-    for (const [index] of cards.entries()) {
-      if (cards[index].comments.length > startValue[startValue.length - 1]) {
-        startValue.push(cards[index].comments.length);
-        maxIndexes.push(index);
-
-        continue;
-      }
-      if (cards[index].comments.length > startValue[startValue.length - 2]) {
-        startValue[startValue.length - 2] = cards[index].comments.length;
+      if (prop > startValue[startValue.length - 2]) {
+        startValue[startValue.length - 2] = prop;
         maxIndexes[maxIndexes.length - 2] = index;
       }
     }
@@ -191,10 +174,9 @@ if (movieCards.length > FILMS_CARD_COUNT_MIN) {
     };
   };
   // Самые популярные фильмы
-  const popularsRatingsValue = getIndexRatingCards(movieCards); // topRated
+  const popularsRatingsValue = getIndexRatingCards(movieCards, `rating`); // topRated
   // Самые комментируемые фильмы
-  const popularsCommentsValue = getIndexCommentedCards(movieCards); // mostComments
-
+  const popularsCommentsValue = getIndexRatingCards(movieCards, `comments.length`); // mostComments
 
   // Рендерим разделы для экстракарточек
   render(filmsBlockElement, createFilmsListExtraTemplate(`Top rated`));
@@ -203,7 +185,7 @@ if (movieCards.length > FILMS_CARD_COUNT_MIN) {
   // Получаем список экстразделов
   const filmsListExtraElement = filmsBlockElement.querySelectorAll(`.films-list--extra`);
   // Рендерим карточки в экстраразделе и добавляем их в общий массив карточек
-  for (const [index, item] of Array.from(filmsListExtraElement).entries()) {
+  for (const [index, item] of filmsListExtraElement.entries()) {
     const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
     // Если первый список (Top rated)
     if (!index) {
@@ -235,7 +217,7 @@ if (movieCards.length > FILMS_CARD_COUNT_MIN) {
   const filmsListExtraElement = filmsBlockElement.querySelectorAll(`.films-list--extra`);
 
   // Рендерим карточки в экстраразделе и добавляем их в общий массив карточек
-  for (const [index, item] of Array.from(filmsListExtraElement).entries()) {
+  for (const [index, item] of filmsListExtraElement.entries()) {
     const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
 
     // Если первый список (Top rated)
