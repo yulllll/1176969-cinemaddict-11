@@ -16,7 +16,6 @@ const computeDescriptionLength = (string) => {
 const createFilmCardTemplate = (movieCard) => {
   const {isWatchlist, isWatched, isFavorite, poster, title, rating, year, duration, genres, description, comments = []} = movieCard; // + comments
 
-  console.log(description.length);
   return (
     `
      <article class="film-card">
