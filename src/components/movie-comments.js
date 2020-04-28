@@ -21,12 +21,13 @@ const createMovieCommentsTemplate = (movieComment) => {
 };
 
 class MovieComments {
-  constructor() {
+  constructor(comment) {
+    this._comment = comment;
     this._element = null;
   }
 
   getTemplate() {
-    return createMovieCommentsTemplate();
+    return createMovieCommentsTemplate(this._comment);
   }
   getElement() {
     if (!this._element) {
