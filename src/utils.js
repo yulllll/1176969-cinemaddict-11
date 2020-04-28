@@ -44,5 +44,34 @@ const render = (container, element, place) => {
       break;
   }
 };
+// Получаем максимальное значение рейтинга и комментариев для экстракарточек
+const getIndexRatingCards = (cards, propPath) => {
+  const startValue = [0];
+  const maxIndexes = [0];
 
-export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount, createElement, render, RenderPosition};
+  const propNames = propPath.split(`.`);
+
+  for (const [index, card] of cards.entries()) {
+    const prop = propNames.reduce((obj, name) => {
+      return obj[name];
+    }, card);
+
+    if (prop > startValue[startValue.length - 1]) {
+      startValue.push(prop);
+      maxIndexes.push(index);
+
+      continue;
+    }
+    if (prop > startValue[startValue.length - 2]) {
+      startValue[startValue.length - 2] = prop;
+      maxIndexes[maxIndexes.length - 2] = index;
+    }
+  }
+
+  return {
+    maxIndex: maxIndexes.pop(),
+    nextIndex: maxIndexes.pop(),
+  };
+};
+
+export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount, createElement, render, RenderPosition, getIndexRatingCards};
