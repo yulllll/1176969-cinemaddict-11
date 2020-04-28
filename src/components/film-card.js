@@ -16,6 +16,9 @@ const computeDescriptionLength = (string) => {
 const createFilmCardTemplate = (movieCard) => {
   const {isWatchlist, isWatched, isFavorite, poster, title, rating, year, duration, genres, description, comments = []} = movieCard; // + comments
 
+  const genre = genres.slice(0, 1);
+  const commentsLength = comments.length;
+
   return (
     `
      <article class="film-card">
@@ -24,11 +27,11 @@ const createFilmCardTemplate = (movieCard) => {
       <p class="film-card__info">
        <span class="film-card__year">${year}</span>
        <span class="film-card__duration">${duration}</span>
-       <span class="film-card__genre">${genres[0]}</span>
+       <span class="film-card__genre">${genre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${computeDescriptionLength(description)}</p>
-      <a class="film-card__comments">${comments.length} comments</a>
+      <a class="film-card__comments">${commentsLength} comments</a>
       <form class="film-card__controls">
        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${getActiveControlClassName(isWatchlist)}">Add to watchlist</button>
        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${getActiveControlClassName(isWatched)}">Mark as watched</button>
