@@ -1,9 +1,10 @@
+import {createElement} from "../utils.js";
+
 const createNavigationTemplate = (movieFilters) => {
   const {watchlistQuantity, watchedQuantity, favoriteQuantity} = movieFilters;
 
   return (
-    `
-     <nav class="main-navigation">
+    `<nav class="main-navigation">
       <div class="main-navigation__items">
        <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
        <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlistQuantity}</span></a>
@@ -11,9 +12,29 @@ const createNavigationTemplate = (movieFilters) => {
        <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoriteQuantity}</span></a>
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
-     </nav>
-    `
+     </nav>`
   );
 };
 
-export {createNavigationTemplate};
+class MovieFilters {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavigationTemplate(this._filters);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {MovieFilters as default};

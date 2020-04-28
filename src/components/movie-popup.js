@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createFilmDetailsPopupTemplate = (movieCard) => {
   const {poster, title, rating, duration, genres, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
 
@@ -7,8 +9,7 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
   const commentsLength = comments.length;
 
   return (
-    `
-     <section class="film-details">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -122,9 +123,29 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
           </section>
         </div>
       </form>
-     </section>
-    `
+     </section>`
   );
 };
 
-export {createFilmDetailsPopupTemplate};
+class MoviePopup {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsPopupTemplate(this._card);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {MoviePopup as default};
