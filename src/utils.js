@@ -1,3 +1,8 @@
+// Перечисления места для вставки DOM-элемента
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+};
 // Получаем произвольный item массива
 const getRandomItem = (array) => { // изменить имя на getRandomItem
   const random = Math.floor(Math.random() * array.length);
@@ -27,6 +32,13 @@ const createElement = (template) => {
   newElement.innerHTML = template;
 
   return newElement.firstChild;
-}
+};
+// Функция для отрисовки созданного DOM-элемента
+const render = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
 
-export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount, createElement};
+  return newElement.firstChild;
+};
+
+export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount, createElement, render, RenderPosition};
