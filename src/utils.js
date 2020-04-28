@@ -21,5 +21,12 @@ const getWatchedCount = (movieCards) => {
 const getFavoriteCount = (movieCards) => {
   return movieCards.filter((card) => card.isFavorite);
 };
+// Функция для создания DOM-элемента
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
 
-export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount};
+  return newElement.firstChild;
+}
+
+export {getRandomItem, getRandomIndex, getRandomIntervalNumber, getWatchlistCount, getWatchedCount, getFavoriteCount, createElement};
