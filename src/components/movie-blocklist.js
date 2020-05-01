@@ -2,15 +2,16 @@ import {createElement} from "../utils.js";
 
 class MovieBlockList {
   constructor() {
-    this._template = `<section class="films-list">
-       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-       <div class="films-list__container"></div>
-      </section>`;
     this._element = null;
   }
 
   getTemplate() {
-    return this._template;
+    return (
+      `<section class="films-list">
+       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+       <div class="films-list__container"></div>
+      </section>`
+    );
   }
   getElement() {
     if (!this._element) {

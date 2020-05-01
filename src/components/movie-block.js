@@ -1,17 +1,13 @@
 import {createElement} from "../utils.js";
 
-const createFilmsBlockTemplate = () => {
-  return (
-    `<section class="films"></section>`
-  );
-};
-
 class MovieBlock {
   constructor() {
     this._element = null;
   }
   getTemplate() {
-    return createFilmsBlockTemplate();
+    return (
+      `<section class="films"></section>`
+    );
   }
   getElement() {
     if (!this._element) {
