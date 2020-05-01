@@ -1,7 +1,7 @@
 // Перечисления места для вставки DOM-элемента
 const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
+  AFTER_BEGIN: `afterbegin`,
+  BEFORE_END: `beforeend`,
 };
 // Получаем произвольный item массива
 const getRandomItem = (array) => { // изменить имя на getRandomItem
@@ -36,10 +36,10 @@ const createElement = (template) => {
 // Функция для отрисовки созданного DOM-элемента
 const render = (container, element, place) => {
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
+    case RenderPosition.AFTER_BEGIN:
       container.prepend(element);
       break;
-    case RenderPosition.BEFOREEND:
+    case RenderPosition.BEFORE_END:
       container.append(element);
       break;
   }

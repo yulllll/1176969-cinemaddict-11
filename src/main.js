@@ -88,14 +88,14 @@ const renderPopup = () => {
         const allMovieCards = popupMovieCards.concat(extraMovieCards);
 
         render(siteBodyElement.querySelector(`.footer`),
-            new MoviePopupComponent(allMovieCards[index]).getElement(), RenderPosition.AFTERBEGIN);
+            new MoviePopupComponent(allMovieCards[index]).getElement(), RenderPosition.AFTER_BEGIN);
 
         const moviePopup = document.querySelector(`.film-details`);
         const commentsContentPopup = moviePopup.querySelector(`.form-details__bottom-container`);
         const commentsList = commentsContentPopup.querySelector(`.film-details__comments-list`);
 
         allMovieCards[index].comments.forEach((it) => {
-          render(commentsList, new MovieCommentsComponents(it).getElement(), RenderPosition.BEFOREEND);
+          render(commentsList, new MovieCommentsComponents(it).getElement(), RenderPosition.BEFORE_END);
         });
         // Включаем функцию закрытия окна и передаём в неё попап
         initCloseButtonPopup(moviePopup);
@@ -109,7 +109,7 @@ const renderPopup = () => {
 const renderMovieCards = (popup, movieComponent) => {
   render(movieComponent.getElement(),
       new MovieBlockListComponent().getElement(),
-      RenderPosition.BEFOREEND);
+      RenderPosition.BEFORE_END);
 
   const filmsListElement = siteBodyElement.querySelector(`.films-list`);
   const filmsContainerElement = siteBodyElement.querySelector(`.films-list__container`);
@@ -119,10 +119,10 @@ const renderMovieCards = (popup, movieComponent) => {
   movieCards.slice(0, showingMovieCardsCount)
     .forEach((movieCard) => render(filmsContainerElement,
         new MovieCardComponent(movieCard).getElement(),
-        RenderPosition.BEFOREEND));
+        RenderPosition.BEFORE_END));
 
   // Рендерим кнопку показать еще
-  render(filmsListElement, new MovieLoadMoreButtonComponent().getElement(), RenderPosition.BEFOREEND);
+  render(filmsListElement, new MovieLoadMoreButtonComponent().getElement(), RenderPosition.BEFORE_END);
   const showMoreButton = filmsListElement.querySelector(`.films-list__show-more`);
 
   const onShowMoreButtonClick = () => {
@@ -135,7 +135,7 @@ const renderMovieCards = (popup, movieComponent) => {
     movieCards.slice(prevMovieCardsCount, showingMovieCardsCount)
       .forEach((movieCard) => render(filmsContainerElement,
           new MovieCardComponent(movieCard).getElement(),
-          RenderPosition.BEFOREEND));
+          RenderPosition.BEFORE_END));
 
     if (showingMovieCardsCount >= movieCards.length) {
       showMoreButton.remove();
@@ -148,8 +148,8 @@ const renderMovieCards = (popup, movieComponent) => {
 // Функция отрисовки экстракарточек
 const renderExtraCards = (popup, movieComponent) => {
   // Рендерим разделы для экстракарточек
-  render(movieComponent.getElement(), new MovieExtraListComponent(FilmsExtraList.TOP_RATED).getElement(), RenderPosition.BEFOREEND);
-  render(movieComponent.getElement(), new MovieExtraListComponent(FilmsExtraList.MOST_COMMENTED).getElement(), RenderPosition.BEFOREEND);
+  render(movieComponent.getElement(), new MovieExtraListComponent(FilmsExtraList.TOP_RATED).getElement(), RenderPosition.BEFORE_END);
+  render(movieComponent.getElement(), new MovieExtraListComponent(FilmsExtraList.MOST_COMMENTED).getElement(), RenderPosition.BEFORE_END);
   // Получаем список экстразделов
   const filmsListExtraElement = movieComponent.getElement().querySelectorAll(`.films-list--extra`);
 
@@ -169,18 +169,18 @@ const renderExtraCards = (popup, movieComponent) => {
       // Если первый список (Top rated)
       if (!index) {
         render(filmsExtraContainerElement,
-            new MovieCardComponent(movieCards[popularsRatingsValue.maxIndex]).getElement(), RenderPosition.BEFOREEND);
+            new MovieCardComponent(movieCards[popularsRatingsValue.maxIndex]).getElement(), RenderPosition.BEFORE_END);
         render(filmsExtraContainerElement,
-            new MovieCardComponent(movieCards[popularsRatingsValue.nextIndex]).getElement(), RenderPosition.BEFOREEND);
+            new MovieCardComponent(movieCards[popularsRatingsValue.nextIndex]).getElement(), RenderPosition.BEFORE_END);
 
         extraMovieCards.push(movieCards[popularsRatingsValue.maxIndex]);
         extraMovieCards.push(movieCards[popularsRatingsValue.nextIndex]);
         // Если второй список (Most commented)
       } else {
         render(filmsExtraContainerElement,
-            new MovieCardComponent(movieCards[popularsCommentsValue.maxIndex]).getElement(), RenderPosition.BEFOREEND);
+            new MovieCardComponent(movieCards[popularsCommentsValue.maxIndex]).getElement(), RenderPosition.BEFORE_END);
         render(filmsExtraContainerElement,
-            new MovieCardComponent(movieCards[popularsCommentsValue.nextIndex]).getElement(), RenderPosition.BEFOREEND);
+            new MovieCardComponent(movieCards[popularsCommentsValue.nextIndex]).getElement(), RenderPosition.BEFORE_END);
 
         extraMovieCards.push(movieCards[popularsCommentsValue.maxIndex]);
         extraMovieCards.push(movieCards[popularsCommentsValue.nextIndex]);
@@ -193,7 +193,7 @@ const renderExtraCards = (popup, movieComponent) => {
       const filmsExtraContainerElement = item.querySelector(`.films-list__container`);
 
       render(filmsExtraContainerElement,
-          new MovieCardComponent(movieCards[0]).getElement(), RenderPosition.BEFOREEND);
+          new MovieCardComponent(movieCards[0]).getElement(), RenderPosition.BEFORE_END);
       extraMovieCards.push(movieCards[0]);
     }
     popup();
@@ -203,12 +203,12 @@ const renderExtraCards = (popup, movieComponent) => {
 const siteHeaderElement = siteBodyElement.querySelector(`.header`);
 const siteMainElement = siteBodyElement.querySelector(`.main`);
 
-render(siteHeaderElement, new UserProfileComponent().getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new MovieFiltersComponent(movieFilters).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new MovieSortComponent().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileComponent().getElement(), RenderPosition.BEFORE_END);
+render(siteMainElement, new MovieFiltersComponent(movieFilters).getElement(), RenderPosition.BEFORE_END);
+render(siteMainElement, new MovieSortComponent().getElement(), RenderPosition.BEFORE_END);
 
 const movieComponent = new MovieBlockComponent();
-render(siteMainElement, movieComponent.getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, movieComponent.getElement(), RenderPosition.BEFORE_END);
 
 renderMovieCards(renderPopup, movieComponent);
 renderExtraCards(renderPopup, movieComponent);
