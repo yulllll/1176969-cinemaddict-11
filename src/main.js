@@ -14,11 +14,12 @@ import UserProfileComponent from "./components/user-profile.js";
 import MovieNormalListComponent from "./components/movie-normal-list.js";
 import MovieNormalListContainerComponent from "./components/movie-normal-list-container.js";
 import MovieNormalListTitleComponent from "./components/movie-normal-list-title.js";
+import NoMovieTitleComponent from "./components/no-movie-title.js";
 // Импорт утилит
 import {RenderPosition, render, getIndexRatingCards} from "./utils.js";
 
 // Констаты для параметров по умолчанию
-const FILMS_CARD_COUNT = 30;
+const FILMS_CARD_COUNT = 0;
 const FILMS_CARD_COUNT_MIN = 1;
 const SHOWING_MOVIE_CARDS_COUNT_ON_START = 5;
 const SHOWING_MOVIE_CARDS_COUNT_BY_BUTTON = 5;
@@ -115,6 +116,16 @@ const renderMovieCards = (popup, movieComponent) => {
       RenderPosition.BEFORE_END);
 
   const filmsListElement = movieComponent.getElement().querySelector(`.films-list`);
+
+  // Если кинокарточек нет, то выводим соответсвующее сообщение
+  if (!movieCards.length) {
+    render(filmsListElement,
+        new NoMovieTitleComponent().getElement(),
+        RenderPosition.BEFORE_END);
+
+    return;
+  }
+
   // Отрисовываем заголовок блока обычных кинокарточек
   render(filmsListElement,
       new MovieNormalListTitleComponent().getElement(),
