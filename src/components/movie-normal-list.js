@@ -1,16 +1,13 @@
 import {createElement} from "../utils.js";
 
-class MovieBlockList {
+class MovieNormalList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
     return (
-      `<section class="films-list">
-       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-       <div class="films-list__container"></div>
-      </section>`
+      `<section class="films-list"></section>`
     );
   }
   getElement() {
@@ -25,4 +22,4 @@ class MovieBlockList {
   }
 }
 
-export {MovieBlockList as default};
+export {MovieNormalList as default};

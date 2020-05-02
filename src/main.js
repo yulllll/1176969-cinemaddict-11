@@ -3,7 +3,7 @@ import {generateMovieCards} from './mock/film.js';
 import {generateFilters} from "./mock/filters.js";
 // Импорт компонентов
 import MovieCardComponent from "./components/movie-card.js";
-import MovieBlockComponent from "./components/movie-block.js";
+import MovieMainBlockComponent from "./components/movie-main-block.js";
 import MovieCommentsComponents from "./components/movie-comments.js";
 import MoviePopupComponent from "./components/movie-popup.js";
 import MovieExtraListComponent from "./components/movie-extra-list.js";
@@ -11,7 +11,9 @@ import MovieLoadMoreButtonComponent from "./components/movie-loadmore-button.js"
 import MovieFiltersComponent from "./components/movie-filters.js";
 import MovieSortComponent from "./components/movie-sort.js";
 import UserProfileComponent from "./components/user-profile.js";
-import MovieBlockListComponent from "./components/movie-blocklist.js";
+import MovieNormalListComponent from "./components/movie-normal-list.js";
+import MovieNormalListContainerComponent from "./components/movie-normal-list-container.js";
+import MovieNormalListTitleComponent from "./components/movie-normal-list-title.js";
 // Импорт утилит
 import {RenderPosition, render, getIndexRatingCards} from "./utils.js";
 
@@ -107,12 +109,22 @@ const renderPopup = () => {
 };
 // Функция отрисовки кинокарточек
 const renderMovieCards = (popup, movieComponent) => {
+  // Отрисовываем блок для обычных кинокарточек
   render(movieComponent.getElement(),
-      new MovieBlockListComponent().getElement(),
+      new MovieNormalListComponent().getElement(),
       RenderPosition.BEFORE_END);
 
-  const filmsListElement = siteBodyElement.querySelector(`.films-list`);
-  const filmsContainerElement = siteBodyElement.querySelector(`.films-list__container`);
+  const filmsListElement = movieComponent.getElement().querySelector(`.films-list`);
+  // Отрисовываем заголовок блока обычных кинокарточек
+  render(filmsListElement,
+      new MovieNormalListTitleComponent().getElement(),
+      RenderPosition.BEFORE_END);
+  // Отрисовываем основной контейнер для обычных кинокарточек
+  render(filmsListElement,
+      new MovieNormalListContainerComponent().getElement(),
+      RenderPosition.BEFORE_END);
+
+  const filmsContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
   // Рендерим стартовую партию кинокарточек
   let showingMovieCardsCount = SHOWING_MOVIE_CARDS_COUNT_ON_START;
@@ -142,8 +154,10 @@ const renderMovieCards = (popup, movieComponent) => {
       showMoreButton.removeEventListener(`click`, onShowMoreButtonClick);
     }
     popup();
+
   };
   showMoreButton.addEventListener(`click`, onShowMoreButtonClick);
+  renderExtraCards(popup, movieComponent);
 };
 // Функция отрисовки экстракарточек
 const renderExtraCards = (popup, movieComponent) => {
@@ -207,8 +221,7 @@ render(siteHeaderElement, new UserProfileComponent().getElement(), RenderPositio
 render(siteMainElement, new MovieFiltersComponent(movieFilters).getElement(), RenderPosition.BEFORE_END);
 render(siteMainElement, new MovieSortComponent().getElement(), RenderPosition.BEFORE_END);
 
-const movieComponent = new MovieBlockComponent();
-render(siteMainElement, movieComponent.getElement(), RenderPosition.BEFORE_END);
+const movieMainBlockComponent = new MovieMainBlockComponent();
+render(siteMainElement, movieMainBlockComponent.getElement(), RenderPosition.BEFORE_END);
 
-renderMovieCards(renderPopup, movieComponent);
-renderExtraCards(renderPopup, movieComponent);
+renderMovieCards(renderPopup, movieMainBlockComponent);
