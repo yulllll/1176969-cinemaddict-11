@@ -6,7 +6,9 @@ class NoMovieTitle {
   }
 
   getTemplate() {
-    return `<h2 class="films-list__title">There are no movies in our database</h2>`;
+    return (
+      `<h2 class="films-list__title">There are no movies in our database</h2>`
+    );
   }
   getElement() {
     if (!this._element) {
