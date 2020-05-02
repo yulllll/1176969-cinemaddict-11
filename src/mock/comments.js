@@ -32,7 +32,7 @@ const generateComment = () => {
   return {
     emoji: getRandomItem(emojis),
     text: getRandomItem(texts),
-    autor: getRandomItem(autors),
+    author: getRandomItem(autors),
     date: getRandomItem(dates),
   };
 };

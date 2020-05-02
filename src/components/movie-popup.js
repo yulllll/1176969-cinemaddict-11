@@ -1,9 +1,15 @@
+import {createElement} from "../utils.js";
+
 const createFilmDetailsPopupTemplate = (movieCard) => {
   const {poster, title, rating, duration, genres, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
 
+  const writersList = writers.join(`, `);
+  const actorsList = actors.join(`, `);
+  const genreHtml = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
+  const commentsLength = comments.length;
+
   return (
-    `
-     <section class="film-details">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -35,11 +41,11 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers.join(`, `)}</td>
+                  <td class="film-details__cell">${writersList}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors.join(`, `)}</td>
+                  <td class="film-details__cell">${actorsList}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
@@ -55,8 +61,7 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
-                  <td class="film-details__cell">
-                    ${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``)}
+                  <td class="film-details__cell">${genreHtml}</td>
                 </tr>
               </tbody></table>
 
@@ -80,7 +85,7 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsLength}</span></h3>
 
             <ul class="film-details__comments-list">
             <!-- comments -->
@@ -118,9 +123,29 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
           </section>
         </div>
       </form>
-     </section>
-    `
+     </section>`
   );
 };
 
-export {createFilmDetailsPopupTemplate};
+class MoviePopup {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsPopupTemplate(this._card);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {MoviePopup as default};
