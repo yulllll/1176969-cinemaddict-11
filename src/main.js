@@ -16,7 +16,8 @@ import MovieNormalListContainerComponent from "./components/movie-normal-list-co
 import MovieNormalListTitleComponent from "./components/movie-normal-list-title.js";
 import NoMovieTitleComponent from "./components/no-movie-title.js";
 // Импорт утилит
-import {RenderPosition, render, getIndexRatingCards} from "./utils.js";
+import {getIndexRatingCards} from "./utils.js";
+import {RenderPosition, render} from "./utils/render.js";
 
 // Констаты для параметров по умолчанию
 const FILMS_CARD_COUNT = 20;
