@@ -110,9 +110,10 @@ const renderPopup = () => {
 };
 // Функция отрисовки кинокарточек
 const renderMovieCards = (popup, movieComponent) => {
+  const movieNormalListComponent = new MovieNormalListComponent();
   // Отрисовываем блок для обычных кинокарточек
   render(movieComponent.getElement(),
-      new MovieNormalListComponent().getElement(),
+      movieNormalListComponent.getElement(),
       RenderPosition.BEFORE_END);
 
   const filmsListElement = movieComponent.getElement().querySelector(`.films-list`);
