@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createFilmDetailsPopupTemplate = (movieCard) => {
   const {poster, title, rating, duration, genres, description, comments = [], director, writers, actors, releaseDate, country, age} = movieCard; // + comments
@@ -127,24 +127,15 @@ const createFilmDetailsPopupTemplate = (movieCard) => {
   );
 };
 
-class MoviePopup {
+class MoviePopup extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsPopupTemplate(this._card);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
 

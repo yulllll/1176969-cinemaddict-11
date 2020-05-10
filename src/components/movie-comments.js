@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createMovieCommentsTemplate = (movieComment) => {
   const {emoji, text, author, date} = movieComment;
@@ -20,24 +20,15 @@ const createMovieCommentsTemplate = (movieComment) => {
   );
 };
 
-class MovieComments {
+class MovieComments extends AbstractComponent {
   constructor(comment) {
+    super();
+
     this._comment = comment;
-    this._element = null;
   }
 
   getTemplate() {
     return createMovieCommentsTemplate(this._comment);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
 

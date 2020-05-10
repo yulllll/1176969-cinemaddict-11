@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const MOVIE_DESCRIPTION_LIMIT = 140;
 
@@ -42,24 +42,15 @@ const createFilmCardTemplate = (movieCard) => {
   );
 };
 
-class MovieCard {
+class MovieCard extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-  remoteElement() {
-    this._element = null;
   }
 }
 

@@ -19,7 +19,7 @@ import NoMovieTitleComponent from "./components/no-movie-title.js";
 import {RenderPosition, render, getIndexRatingCards} from "./utils.js";
 
 // Констаты для параметров по умолчанию
-const FILMS_CARD_COUNT = 0;
+const FILMS_CARD_COUNT = 20;
 const FILMS_CARD_COUNT_MIN = 1;
 const SHOWING_MOVIE_CARDS_COUNT_ON_START = 5;
 const SHOWING_MOVIE_CARDS_COUNT_BY_BUTTON = 5;
