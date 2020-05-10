@@ -10,16 +10,20 @@ const createElement = (template) => {
 
   return newElement.firstChild;
 };
-// Функция для отрисовки созданного DOM-элемента
-const render = (container, element, place) => {
+// Функция для отрисовки созданного компонента
+const render = (container, component, place) => {
   switch (place) {
     case RenderPosition.AFTER_BEGIN:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     case RenderPosition.BEFORE_END:
-      container.append(element);
+      container.append(component.getElement());
       break;
   }
 };
+// Функция для удаления
+const remove = (element) => {
+  element.remove();
+};
 
-export {createElement, render, RenderPosition};
+export {createElement, render, RenderPosition, remove};

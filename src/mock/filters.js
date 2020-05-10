@@ -1,4 +1,4 @@
-import {getWatchlistCount, getWatchedCount, getFavoriteCount} from "../utils.js";
+import {getWatchlistCount, getWatchedCount, getFavoriteCount} from "../utils/common.js";
 // Генерируем значения фильтров
 const generateFilters = (movieCards) => {
   return {

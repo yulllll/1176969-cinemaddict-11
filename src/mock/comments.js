@@ -1,4 +1,4 @@
-import {getRandomItem, getRandomIntervalNumber} from "../utils";
+import {getRandomItem, getRandomIntervalNumber} from "../utils/common";
 
 // Данные для мокков
 const emojis = [

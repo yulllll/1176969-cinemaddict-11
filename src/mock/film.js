@@ -1,4 +1,4 @@
-import {getRandomItem, getRandomIndex, getRandomIntervalNumber} from "../utils.js";
+import {getRandomItem, getRandomIndex, getRandomIntervalNumber} from "../utils/common.js";
 import {generateComments} from "./comments.js";
 
 // Количество сгенерированных участников группы
