@@ -1,33 +1,31 @@
-// Импорт моков
-import {generateMovieCards} from './mock/film.js';
-import {generateFilters} from "./mock/filters.js";
-// Импорт компонентов
-import MovieMainBlockComponent from "./components/movie-main-block.js";
-import MovieFiltersComponent from "./components/movie-filters.js";
-import MovieSortComponent from "./components/movie-sort.js";
+import {generateMovies} from "./mock/movie.js";
+import {render} from "./utils/render.js";
 import UserProfileComponent from "./components/user-profile.js";
-// Импорт утилит
-import {RenderPosition, render} from "./utils/render.js";
-// Импорт контроллера
-import PageController from "./controllers/movie-controller";
+import FiltersComponent from "./components/filters";
+import SortComponent from "./components/sort.js";
+import FooterStatisticsComponent from "./components/footer";
+import MovieContainerComponent from "./components/movies/movie-container.js";
+import PageController from "./controllers/page-controller.js";
 
-// Констаты для параметров по умолчанию
-const FILMS_CARD_COUNT = 20;
+const MOVIE_CARD_COUNT = 50;
+const movieData = generateMovies(MOVIE_CARD_COUNT);
 
-// Генерируем моки
-const movieCards = generateMovieCards(FILMS_CARD_COUNT);
-const movieFilters = generateFilters(movieCards);
+const headerElement = document.querySelector(`.header`);
+const mainElement = document.querySelector(`.main`);
+const footerElement = document.querySelector(`.footer`);
 
-const siteBodyElement = document.querySelector(`body`);
+const userProfile = new UserProfileComponent(movieData);
+const filters = new FiltersComponent(movieData);
+const sort = new SortComponent();
+const movieContainer = new MovieContainerComponent();
+const footerStatistics = new FooterStatisticsComponent(movieData);
+const pageController = new PageController(movieData, movieContainer);
 
-const siteHeaderElement = siteBodyElement.querySelector(`.header`);
-const siteMainElement = siteBodyElement.querySelector(`.main`);
+render(headerElement, userProfile);
+render(mainElement, filters);
+render(mainElement, sort);
+render(mainElement, movieContainer);
+render(footerElement.querySelector(`.footer__statistics`), footerStatistics);
 
-render(siteHeaderElement, new UserProfileComponent(), RenderPosition.BEFORE_END);
-render(siteMainElement, new MovieFiltersComponent(movieFilters), RenderPosition.BEFORE_END);
-render(siteMainElement, new MovieSortComponent(), RenderPosition.BEFORE_END);
-
-const movieMainBlockComponent = new MovieMainBlockComponent();
-render(siteMainElement, movieMainBlockComponent, RenderPosition.BEFORE_END);
-
-new PageController().render(movieMainBlockComponent);
+pageController.renderNormalMovies();
+pageController.renderExtraMovies();
