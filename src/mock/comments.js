@@ -1,51 +1,46 @@
-import {getRandomItem, getRandomIntervalNumber} from "../utils";
+import {getRandomItem} from "../utils/common.js";
 
-// Данные для мокков
-const emojis = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`
+const authors = [
+  `Tim Macoveev`,
+  `John Doe`
 ];
-const texts = [
+
+const messages = [
   `Interesting setting and a good cast`,
   `Booooooooooring`,
   `Very very old. Meh`,
   `Almost two hours? Seriously?`
 ];
-const autors = [
-  `Tim Macoveev`,
-  `John Doe`
+
+const emotions = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`
 ];
+
 const dates = [
   `2019/12/31 23:59`,
   `2 days ago`,
   `Today`
 ];
-const сommentsLength = {
-  MIN: 0,
-  MAX: 5,
-};
 
-// Создаём комментарий
 const generateComment = () => {
   return {
-    emoji: getRandomItem(emojis),
-    text: getRandomItem(texts),
-    author: getRandomItem(autors),
+    author: getRandomItem(authors),
+    comment: getRandomItem(messages),
     date: getRandomItem(dates),
+    emotion: getRandomItem(emotions),
   };
 };
 
-// Создаём массив комметариев
-const generateComments = () => {
-  const randomIndex = Math.floor(getRandomIntervalNumber(сommentsLength.MIN, сommentsLength.MAX));
+
+export const generateComments = (count) => {
   const comments = [];
 
-  for (let i = 0; i < randomIndex; i++) {
+  for (let i = 0; i < count; i++) {
     comments.push(generateComment());
   }
+
   return comments;
 };
-
-export {generateComments};
