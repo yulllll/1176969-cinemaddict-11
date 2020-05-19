@@ -1,37 +1,47 @@
-// Коды клавиш
+import {MONTHS_NAMES} from "../utils/const.js";
+
 export const KeyCode = {
   ESCAPE: 27,
 };
-// Получаем произвольный item массива
-export const getRandomItem = (array) => { // изменить имя на getRandomItem
+// Произвольный item массива
+export const getRandomItem = (array) => {
   const random = Math.floor(Math.random() * array.length);
   return array[random];
 };
 
-// Получаем произвольный index массива
-export const getRandomIndex = (array) => { // изменить имя на getRandomIndex
+// Произвольный index массива
+export const getRandomIndex = (array) => {
   return Math.floor(Math.random() * array.length);
 };
 
-// Получаем произвольное число от минимального и максимального
+// Произвольное число от минимального и максимального
 export const getRandomIntervalNumber = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
-// Генерируем произвольную дату
-export const getRandomDate = () => {
-  const targetDate = new Date();
-  const day = getRandomIntervalNumber(1, 31);
-  const month = getRandomIntervalNumber(1, 12);
-  const year = getRandomIntervalNumber(2015, 2020);
+// Дата в формате ДД/ММ/ГГ
+export const getReleaseDate = (date) => {
+  const targetDate = new Date(date);
+  const day = targetDate.getDate();
+  const month = MONTHS_NAMES[targetDate.getMonth()];
+  const year = targetDate.getFullYear();
 
-  targetDate.setFullYear(year, month, day);
-  const options = {year: `numeric`, month: `long`, day: `numeric`};
-
-  return targetDate.toLocaleDateString(`en-GB`, options);
+  return `${day} ${month} ${year}`;
 };
 
-// Получаем количество фильмов для указанной метки (Watchlist, Watched, Favorite)
+// Дата в формате ГГ/ММ/ДД ЧЧ:СС
+export const getCommentsDate = (date) => {
+  const targetDate = new Date(date);
+  const day = targetDate.getDate();
+  const month = MONTHS_NAMES[targetDate.getMonth()];
+  const year = targetDate.getFullYear();
+  const hours = targetDate.getHours() >= 10 ? `${targetDate.getHours()}` : `0${targetDate.getHours()}`;
+  const min = targetDate.getMinutes() >= 10 ? `${targetDate.getMinutes()}` : `0${targetDate.getMinutes()}`;
+
+  return `${year}/${month}/${day} ${hours}:${min}`;
+};
+
+// Количество активных киноконтроллеров в кинокарточке
 export const getControlsCount = (array, propPath) => {
   const propNames = propPath.split(`.`);
 
@@ -43,8 +53,8 @@ export const getControlsCount = (array, propPath) => {
   return affArray.length;
 };
 
-// Получаем размер заголовка согласно лимита
-export const computeDescriptionLength = (string, limit) => {
+// Длинна заголовка
+export const getMaxDescriptionLength = (string, limit) => {
   let newString;
   if (string.length > limit) {
     newString = `${(string.substr(0, limit - 1)).trim()}...`;

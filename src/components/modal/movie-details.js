@@ -1,39 +1,37 @@
-import AbstractComponent from "../abstract.js";
+import AbstractSmartComponent from "../abstract/abstract-smart.js";
+import {getReleaseDate} from "../../utils/common.js";
+import {getCommentsDate} from "../../utils/common.js";
 
-export default class MovieDetails extends AbstractComponent {
-  constructor(movie) {
-    super();
-
-    this._movie = movie;
-    this._commentsLength = this._movie.comments.length;
-    this._movieControls = [
-      {item: `Add to watchlist`, name: `watchlist`, check: this._movie.userDetails.isWatchlist},
-      {item: `Already watched`, name: `watched`, check: this._movie.userDetails.isWatched},
-      {item: `Add to favorites`, name: `favorite`, check: this._movie.userDetails.isFavorite}
-    ];
-  }
-
-  _getGenresTemplate(genres) {
-    return genres.map((genre) => {
-      return (
-        `<span class="film-details__genre">${genre}</span>`
-      );
-    }).join(``);
-  }
-
-  _getGenreTemplate(genres) {
-    const title = genres.length > 1 ? `Genres` : `Genre`;
-
-    return `<td class="film-details__term">${title}</td>
-              <td class="film-details__cell">${this._getGenresTemplate(genres)}</td>`;
-  }
-
-  _getInfoTemplate() {
-    const {poster, ageRating, title, altTitle, totalRating, director, writers, actors, release, runtime, genres, description} = this._movie.movieInfo;
-
-
+const getGenresInfoTemplate = (genres) => {
+  return genres.map((genre) => {
     return (
-      `<div class="film-details__info-wrap">
+      `<span class="film-details__genre">${genre}</span>`
+    );
+  }).join(``);
+};
+
+const getMovieDetailsInfoTemplate = (movie) => {
+  const {poster, ageRating, title, altTitle, totalRating, director, writers, actors, release, runtime, genres, description} = movie.movieInfo;
+
+  const detailTitles = {
+    director: `Director`,
+    writers: `Writers`,
+    actors: `Actors`,
+    date: `Release Date`,
+    runtime: `Runtime`,
+    country: `Country`,
+    genres: genres.length > 1 ? `Genres` : `Genre`,
+  };
+
+  const fewWriters = writers.join(`, `);
+  const fewActors = actors.join(`, `);
+  const date = getReleaseDate(release.date);
+  const country = release.country;
+
+  const genresMarkup = getGenresInfoTemplate(genres);
+
+  return (
+    `<div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
 
@@ -54,31 +52,32 @@ export default class MovieDetails extends AbstractComponent {
 
           <table class="film-details__table">
             <tbody><tr class="film-details__row">
-              <td class="film-details__term">Director</td>
+              <td class="film-details__term">${detailTitles.director}</td>
               <td class="film-details__cell">${director}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${writers.join(`, `)}</td>
+              <td class="film-details__term">${detailTitles.writers}</td>
+              <td class="film-details__cell">${fewWriters}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actors.join(`, `)}</td>
+              <td class="film-details__term">${detailTitles.actors}</td>
+              <td class="film-details__cell">${fewActors}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${release.date}</td>
+              <td class="film-details__term">${detailTitles.date}</td>
+              <td class="film-details__cell">${date}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Runtime</td>
+              <td class="film-details__term">${detailTitles.runtime}</td>
               <td class="film-details__cell">${runtime}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${release.country}</td>
+              <td class="film-details__term">${detailTitles.country}</td>
+              <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              ${this._getGenreTemplate(genres)}
+               <td class="film-details__term">${detailTitles.genres}</td>
+               <td class="film-details__cell">${genresMarkup}</td>
             </tr>
           </tbody></table>
 
@@ -87,22 +86,30 @@ export default class MovieDetails extends AbstractComponent {
             </p>
         </div>
       </div>`
-    );
-  }
+  );
+};
 
-  _getControlsTemplate() {
-    return this._movieControls.map(({item, name, check}) => {
-      return (
-        `<input type="checkbox" class="film-details__control-input visually-hidden" id="${name}" name="${name}" ${check ? `checked` : ``}>
+const getMovieDetailsControlsTemplate = (movie) => {
+  const cardControls = [
+    {item: `Add to watchlist`, name: `watchlist`, check: movie.userDetails.isWatchlist},
+    {item: `Already watched`, name: `watched`, check: movie.userDetails.isWatched},
+    {item: `Add to favorites`, name: `favorite`, check: movie.userDetails.isFavorite}
+  ];
+
+  return cardControls.map(({item, name, check}) => {
+    return (
+      `<input type="checkbox" class="film-details__control-input visually-hidden" id="${name}" name="${name}" ${check ? `checked` : ``}>
        <label for="${name}" class="film-details__control-label film-details__control-label--${name}">${item}</label>`
-      );
-    }).join(``);
-  }
+    );
+  }).join(``);
+};
 
-  _getCommentsTemplate() {
-    return this._movie.comments.map(({emotion, comment, author, date}) => {
-      return (
-        `<li class="film-details__comment">
+const getMovieDetailsCommentsTemplate = (movie) => {
+  return movie.comments.map(({emotion, comment, author, date}) => {
+    const commentsTime = getCommentsDate(date);
+
+    return (
+      `<li class="film-details__comment">
               <span class="film-details__comment-emoji">
                 <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
               </span>
@@ -110,38 +117,41 @@ export default class MovieDetails extends AbstractComponent {
                 <p class="film-details__comment-text">${comment}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
-                  <span class="film-details__comment-day">${date}</span>
+                  <span class="film-details__comment-day">${commentsTime}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
             </li>`
-      );
-    }).join(``);
-  }
+    );
+  }).join(``);
+};
 
-  setCloseButtonClickListener(cb) {
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, cb);
-  }
+const getMovieDetailsTemplate = (movie) => {
+  const infoMarkup = getMovieDetailsInfoTemplate(movie);
+  const controlsMarkup = getMovieDetailsControlsTemplate(movie);
+  const commentsMarkup = getMovieDetailsCommentsTemplate(movie);
+  const commentsLength = movie.comments.length;
 
-  getTemplate() {
-    return (
-      `<section class="film-details">
+  return (
+    `<section class="film-details">
         <form class="film-details__inner" action="" method="get">
           <div class="form-details__top-container">
             <div class="film-details__close">
               <button class="film-details__close-btn" type="button">close</button>
             </div>
-            ${this._getInfoTemplate()}
+            ${infoMarkup}
             <section class="film-details__controls">
-              ${this._getControlsTemplate()}
+              ${controlsMarkup}
             </section>
           </div>
 
           <div class="form-details__bottom-container">
             <section class="film-details__comments-wrap">
-              <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._commentsLength}</span></h3>
+              <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">
+                ${commentsLength}
+                </span></h3>
               <ul class="film-details__comments-list">
-                  ${this._getCommentsTemplate()}
+                  ${commentsMarkup}
               </ul>
 
               <div class="film-details__new-comment">
@@ -177,6 +187,70 @@ export default class MovieDetails extends AbstractComponent {
           </div>
         </form>
       </section>`
-    );
+  );
+};
+
+
+export default class MovieDetails extends AbstractSmartComponent {
+  constructor(movie) {
+    super();
+
+    this._movie = movie;
+    this._element = this.getElement();
+
+    this._onCloseMovieDetailsButtonClick = null;
+    this._onWatchlistMovieControllerClick = null;
+    this._onWatchedMovieControllerClick = null;
+    this._onFavoriteMovieControllerClick = null;
+    this._setAddEmotionInNewComment();
+  }
+
+  getTemplate() {
+    return getMovieDetailsTemplate(this._movie);
+  }
+
+  recoveryListeners() {
+    this.setCloseButtonClickListener(this._onCloseMovieDetailsButtonClick);
+    this.setAddWatchListClickListener(this._onWatchlistMovieControllerClick);
+    this.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
+    this.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
+    this._setAddEmotionInNewComment();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  setCloseButtonClickListener(cb) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, cb);
+  }
+
+  setAddWatchListClickListener(cb) {
+    this.getElement().querySelector(`#watchlist`).addEventListener(`click`, cb);
+  }
+
+  setAddWatchedClickListener(cb) {
+    this.getElement().querySelector(`#watched`).addEventListener(`click`, cb);
+  }
+
+  setAddFavoriteClickListener(cb) {
+    this.getElement().querySelector(`#favorite`).addEventListener(`click`, cb);
+  }
+
+  _setAddEmotionInNewComment() {
+    // TODO: добавить проверку если нет комментариев?
+    this._element.querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
+      const emotionContainer = this._element.querySelector(`.film-details__add-emoji-label`);
+      let emotionImg = emotionContainer.querySelector(`img`);
+
+      if (!emotionImg) {
+        emotionImg = document.createElement(`img`);
+      }
+
+      emotionImg.src = `./images/emoji/${evt.target.value}.png`;
+      emotionImg.width = 55;
+      emotionImg.height = 55;
+      emotionContainer.append(emotionImg);
+    });
   }
 }

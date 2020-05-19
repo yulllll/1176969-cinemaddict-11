@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract.js";
+import AbstractComponent from "./abstract/abstract-smart.js";
 
 export const SortType = {
   DEFAULT: `default`,
@@ -21,6 +21,7 @@ export default class Sort extends AbstractComponent {
     super();
 
     this._currentSortType = SortType.DEFAULT;
+    this._sortTypeHandler = null;
   }
 
   getTemplate() {

@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract.js";
+import AbstractComponent from "./abstract/abstract.js";
 import {getControlsCount} from "../utils/common.js";
 
 export const ControlsPath = {

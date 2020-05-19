@@ -1,10 +1,10 @@
-// Перечисления места вставки DOM-элемента
+// Перечисление мест вставки DOM-элемента
 export const RenderPosition = {
   AFTER_BEGIN: `afterbegin`,
   BEFORE_END: `beforeend`,
 };
 
-// Функция для создания DOM-элемента
+// Для создания HTML-кода
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -12,7 +12,7 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-// Функция для отрисовки созданного компонента
+// Для отрисовки созданного компонента
 export const render = (container, component, place = RenderPosition.BEFORE_END) => {
   switch (place) {
     case RenderPosition.AFTER_BEGIN:
@@ -24,8 +24,21 @@ export const render = (container, component, place = RenderPosition.BEFORE_END) 
   }
 };
 
-// Функция для удаления
+// Для удаления комопонента
 export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
+};
+
+// Для замены компонента
+export const replace = (newComponent, oldComponent) => {
+  const parentElement = oldComponent.getElement().parentElement;
+  const newElement = newComponent.getElement();
+  const oldElement = oldComponent.getElement();
+
+  const isExistElements = !!(parentElement && newElement && oldElement);
+
+  if (isExistElements && parentElement.contains(oldElement)) {
+    parentElement.replaceChild(newElement, oldElement);
+  }
 };

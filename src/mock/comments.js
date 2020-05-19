@@ -19,17 +19,11 @@ const emotions = [
   `angry`
 ];
 
-const dates = [
-  `2019/12/31 23:59`,
-  `2 days ago`,
-  `Today`
-];
-
 const generateComment = () => {
   return {
     author: getRandomItem(authors),
     comment: getRandomItem(messages),
-    date: getRandomItem(dates),
+    date: +(new Date()) - Math.random() * 10 * 31536000000,
     emotion: getRandomItem(emotions),
   };
 };
