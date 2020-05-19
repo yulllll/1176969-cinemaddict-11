@@ -1,27 +1,17 @@
 import AbstractComponent from "../abstract.js";
 import {computeDescriptionLength} from "../../utils/common.js";
-
-const DESCRIPTION_LIMIT = 140;
+import {DESCRIPTION_LIMIT} from "../../utils/const.js";
 
 export default class MovieCard extends AbstractComponent {
   constructor(movie) {
     super();
 
     this._movie = movie;
-    this._descriptionLimit = DESCRIPTION_LIMIT;
     this._movieControls = [
       {item: `Add to watchlist`, className: `add-to-watchlist`, check: this._movie.userDetails.isWatchlist},
       {item: `Mark as watched`, className: `mark-as-watched`, check: this._movie.userDetails.isWatched},
       {item: `Mark as favorite`, className: `favorite`, check: this._movie.userDetails.isFavorite}
     ];
-  }
-
-  _getControlsTemplate() {
-    return this._movieControls.map(({item, className, check}) => {
-      return (
-        `<button class="film-card__controls-item button film-card__controls-item--${className} ${check ? `film-card__controls-item--active` : ``}">${item}</button>`
-      );
-    }).join(``);
   }
 
   setCardClickListener(cb) {
@@ -41,12 +31,20 @@ export default class MovieCard extends AbstractComponent {
             <span class="film-card__genre">${genres[0]}</span>
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-        <p class="film-card__description">${computeDescriptionLength(description, this._descriptionLimit)}</p>
+        <p class="film-card__description">${computeDescriptionLength(description, DESCRIPTION_LIMIT)}</p>
         <a class="film-card__comments">${this._movie.comments.length} comments</a>
         <form class="film-card__controls">
             ${this._getControlsTemplate()}
         </form>
        </article>`
     );
+  }
+
+  _getControlsTemplate() {
+    return this._movieControls.map(({item, className, check}) => {
+      return (
+        `<button class="film-card__controls-item button film-card__controls-item--${className} ${check ? `film-card__controls-item--active` : ``}">${item}</button>`
+      );
+    }).join(``);
   }
 }

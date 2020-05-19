@@ -32,7 +32,7 @@ export const getRandomDate = () => {
 };
 
 // Получаем количество фильмов для указанной метки (Watchlist, Watched, Favorite)
-export const getMarkCount = (array, propPath) => {
+export const getControlsCount = (array, propPath) => {
   const propNames = propPath.split(`.`);
 
   // Массив из положительных элементов

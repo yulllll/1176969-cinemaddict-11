@@ -1,29 +1,18 @@
 import AbstractComponent from "./abstract.js";
-import {getMarkCount} from "../utils/common";
+import {getControlsCount} from "../utils/common.js";
+import {ControlsPath} from "./filters.js";
+
+const UserRanks = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie Buff`,
+};
 
 export default class UserProfile extends AbstractComponent {
   constructor(movies) {
     super();
 
-    this._userRank = null;
-    this._ranks = [``, `Novice`, `Fan`, `Movie Buff`];
     this._movies = movies;
-    this._watchedPath = `userDetails.isWatched`;
-  }
-
-  _getUserRating() {
-    const userWatchedCount = getMarkCount(this._movies, this._watchedPath);
-    if (userWatchedCount > 1 && userWatchedCount <= 10) {
-      this._userRank = this._ranks[1];
-    } else if (userWatchedCount > 10 && userWatchedCount <= 20) {
-      this._userRank = this._ranks[2];
-    } else if (userWatchedCount > 20) {
-      this._userRank = this._ranks[3];
-    } else {
-      this._userRank = this._ranks[0];
-    }
-
-    return this._userRank;
   }
 
   getTemplate() {
@@ -33,5 +22,22 @@ export default class UserProfile extends AbstractComponent {
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
      </section>`
     );
+  }
+
+  _getUserRating() {
+    let userRank = null;
+    const userWatchedCount = getControlsCount(this._movies, ControlsPath.WATCHED);
+
+    if (userWatchedCount > 1 && userWatchedCount <= 10) {
+      userRank = UserRanks.NOVICE;
+    } else if (userWatchedCount > 10 && userWatchedCount <= 20) {
+      userRank = UserRanks.FAN;
+    } else if (userWatchedCount > 20) {
+      userRank = UserRanks.MOVIE_BUFF;
+    } else {
+      userRank = ``;
+    }
+
+    return userRank;
   }
 }
