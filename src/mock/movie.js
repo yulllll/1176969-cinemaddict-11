@@ -52,14 +52,10 @@ const Ratings = {
   MAX: 10,
 };
 
-const durations = [
-  `1h 55m`,
-  `54m`,
-  `1h 59m`,
-  `1h 21m`,
-  `16m`,
-  `1h 18m`
-];
+const Durations = {
+  MAX: 120,
+  MIN: 30,
+};
 
 const genres = [
   `Musical`,
@@ -119,7 +115,7 @@ const generateMovie = (movieID) => {
         date: +(new Date()) - Math.random() * 10 * 31536000000,
         country: getRandomItem(countries),
       },
-      runtime: getRandomItem(durations),
+      runtime: getRandomIntervalNumber(Durations.MIN, Durations.MAX),
       genres: collectMovieTeam(genres),
       description: require(`getlorem`).words(Math.round(getRandomIntervalNumber(10, 35))),
     },

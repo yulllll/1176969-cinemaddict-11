@@ -1,6 +1,9 @@
 import AbstractSmartComponent from "../abstract/abstract-smart.js";
-import {getReleaseDate} from "../../utils/common.js";
-import {getCommentsDate} from "../../utils/common.js";
+import {
+  getReleaseDateFormat,
+  getRuntimeFormat,
+  getCommentTime,
+} from "../../utils/date.js";
 
 const getGenresInfoTemplate = (genres) => {
   return genres.map((genre) => {
@@ -25,8 +28,9 @@ const getMovieDetailsInfoTemplate = (movie) => {
 
   const fewWriters = writers.join(`, `);
   const fewActors = actors.join(`, `);
-  const date = getReleaseDate(release.date);
+  const date = getReleaseDateFormat(release.date);
   const country = release.country;
+  const runTimeFormat = getRuntimeFormat(runtime);
 
   const genresMarkup = getGenresInfoTemplate(genres);
 
@@ -69,7 +73,7 @@ const getMovieDetailsInfoTemplate = (movie) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${detailTitles.runtime}</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${runTimeFormat}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${detailTitles.country}</td>
@@ -106,7 +110,7 @@ const getMovieDetailsControlsTemplate = (movie) => {
 
 const getMovieDetailsCommentsTemplate = (movie) => {
   return movie.comments.map(({emotion, comment, author, date}) => {
-    const commentsTime = getCommentsDate(date);
+    const commentsTime = getCommentTime(date);
 
     return (
       `<li class="film-details__comment">
@@ -203,6 +207,7 @@ export default class MovieDetails extends AbstractSmartComponent {
     this._onWatchedMovieControllerClick = null;
     this._onFavoriteMovieControllerClick = null;
     this._setAddEmotionInNewComment();
+    // TODO: реализация subscribeOnEvents
   }
 
   getTemplate() {

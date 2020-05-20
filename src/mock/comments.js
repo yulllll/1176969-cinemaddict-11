@@ -23,7 +23,7 @@ const generateComment = () => {
   return {
     author: getRandomItem(authors),
     comment: getRandomItem(messages),
-    date: +(new Date()) - Math.random() * 10 * 31536000000,
+    date: +(new Date()) - Math.random() * 10 * 315360000,
     emotion: getRandomItem(emotions),
   };
 };
