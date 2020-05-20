@@ -1,4 +1,4 @@
-import AbstractComponent from "../../abstract.js";
+import AbstractComponent from "../../abstract/abstract.js";
 
 export default class NormalCardContainer extends AbstractComponent {
   getTemplate() {

@@ -1,4 +1,4 @@
-import {getRandomItem, getRandomIndex, getRandomIntervalNumber, getRandomDate} from "../utils/common.js";
+import {getRandomItem, getRandomIndex, getRandomIntervalNumber} from "../utils/common.js";
 import {generateComments} from "./comments.js";
 
 const titles = [
@@ -116,7 +116,7 @@ const generateMovie = (movieID) => {
       writers: collectMovieTeam(writers),
       actors: collectMovieTeam(actors),
       release: {
-        date: getRandomDate(),
+        date: +(new Date()) - Math.random() * 10 * 31536000000,
         country: getRandomItem(countries),
       },
       runtime: getRandomItem(durations),
@@ -126,7 +126,7 @@ const generateMovie = (movieID) => {
     userDetails: {
       isWatchlist: Math.random() > 0.5,
       isWatched: Math.random() > 0.5,
-      watchingDate: getRandomDate(),
+      watchingDate: +(new Date()) - Math.random() * 10 * 31536000000,
       isFavorite: Math.random() > 0.5,
     },
   };
