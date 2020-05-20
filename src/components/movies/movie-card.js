@@ -1,4 +1,4 @@
-import {getMaxDescriptionLength} from "../../utils/common.js";
+import {getNewTrimmedString} from "../../utils/common.js";
 import {MAX_DESCRIPTION_LENGTH} from "../../const.js";
 import AbstractSmartComponent from "../abstract/abstract-smart.js";
 import {
@@ -25,7 +25,7 @@ const getMovieCardTemplate = (movie) => {
 
   const releaseYear = getReleaseYearFormat(release.date);
   const genre = genres.splice(0, 1).join(``);
-  const spliceDescription = getMaxDescriptionLength(description, MAX_DESCRIPTION_LENGTH);
+  const spliceDescription = getNewTrimmedString(description, MAX_DESCRIPTION_LENGTH);
   const commentsMovieLength = movie.comments.length;
   const movieCardControlsMarkup = getMovieCardControlsTemplate(movieCardControls);
   const runtimeFormat = getRuntimeFormat(runtime);

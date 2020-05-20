@@ -31,7 +31,7 @@ export const getControlsCount = (array, propPath) => {
 };
 
 // Длинна заголовка
-export const getMaxDescriptionLength = (string, limit) => {
+export const getNewTrimmedString = (string, limit) => {
   let newString;
   if (string.length > limit) {
     newString = `${(string.substr(0, limit - 1)).trim()}...`;

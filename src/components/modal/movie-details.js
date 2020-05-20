@@ -222,10 +222,6 @@ export default class MovieDetails extends AbstractSmartComponent {
     this._setAddEmotionInNewComment();
   }
 
-  rerender() {
-    super.rerender();
-  }
-
   setCloseButtonClickListener(cb) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, cb);
   }

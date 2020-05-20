@@ -211,7 +211,7 @@ export default class PageController {
   onViewChange() {
     // TODO: колличество movie-controller.js
     this._showedMovieControllers.forEach((movie) => {
-      return movie.setDefaultView();
+      movie.setDefaultView();
     });
   }
 }
