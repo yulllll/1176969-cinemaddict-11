@@ -146,17 +146,35 @@ export default class MovieController {
   }
 
   _onWatchlistMovieControllerClick(elementScrollTop) {
-    this._onDataChange(this, this._movie, Object.assign({}, this._movie.userDetails, {
-      isWatchlist: !this._movie.userDetails.isWatchlist}), elementScrollTop);
+    // TODO: смотреть данные, объект в объекте,
+    //  по другому не получилось вернуть новый изменённый
+    const newUserDetails = Object.assign({}, this._movie.userDetails,
+        {isWatchlist: !this._movie.userDetails.isWatchlist});
+    const newUserDetailsData = Object.assign({}, this._movie,
+        {userDetails: newUserDetails});
+
+    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
   }
 
   _onWatchedMovieControllerClick(elementScrollTop) {
-    this._onDataChange(this, this._movie, Object.assign({}, this._movie.userDetails, {
-      isWatched: !this._movie.userDetails.isWatched}), elementScrollTop);
+    // TODO: смотреть данные, объект в объекте,
+    //  по другому не получилось вернуть новый изменённый
+    const newUserDetails = Object.assign({}, this._movie.userDetails,
+        {isWatched: !this._movie.userDetails.isWatched});
+    const newUserDetailsData = Object.assign({}, this._movie,
+        {userDetails: newUserDetails});
+
+    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
   }
 
   _onFavoriteMovieControllerClick(elementScrollTop) {
-    this._onDataChange(this, this._movie, Object.assign({}, this._movie.userDetails, {
-      isFavorite: !this._movie.userDetails.isFavorite}), elementScrollTop);
+    // TODO: смотреть данные, объект в объекте,
+    //  по другому не получилось вернуть новый изменённый
+    const newUserDetails = Object.assign({}, this._movie.userDetails,
+        {isFavorite: !this._movie.userDetails.isFavorite});
+    const newUserDetailsData = Object.assign({}, this._movie,
+        {userDetails: newUserDetails});
+
+    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
   }
 }

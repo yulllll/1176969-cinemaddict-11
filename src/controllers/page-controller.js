@@ -19,9 +19,10 @@ import MovieController from "./movie-controller.js";
 
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, moviesModel) {
     this._container = container;
-    this._movies = null;
+    this._moviesModel = moviesModel;
+    // this._movies = null;
 
     this._sortComponent = new SortComponent();
     this._mainMovieListsComponent = new MovieContainerComponent();
@@ -44,12 +45,14 @@ export default class PageController {
   }
 
 
-  render(moviesData) {
-    this._movies = moviesData;
+  // render(moviesData) {
+  render() {
+    // this._movies = moviesData;
+    this._movies = this._moviesModel.getMovies();
 
     render(this._container, this._sortComponent);
     render(this._container, this._mainMovieListsComponent);
-    this._sortComponent.setSortButtonClickListener((sortType) => this._onSortButtonClick(sortType, moviesData));
+    this._sortComponent.setSortButtonClickListener((sortType) => this._onSortButtonClick(sortType, this._movies));
 
     this._renderNormalList(this._movies);
     this._renderExtraLists(this._movies);
@@ -94,20 +97,12 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldMoviesData, newUserDetailsData, elementScrollTop) {
-    const movieIndex = this._movies.findIndex((it) => it.userDetails === oldMoviesData.userDetails);
+    const isSuccess = this._moviesModel.updateMovies(oldMoviesData.id, newUserDetailsData);
 
-    const isOldDataNotMoviesData = movieIndex === -1;
-
-    if (isOldDataNotMoviesData) {
-      return;
+    if (isSuccess) {
+      movieController.render(newUserDetailsData);
     }
 
-    this._movies[movieIndex].userDetails = newUserDetailsData;
-    const newMoviesData = this._movies[movieIndex];
-
-    this._movies = [].concat(this._movies.slice(0, movieIndex), newMoviesData, this._movies.slice(movieIndex + 1));
-
-    movieController.render(this._movies[movieIndex]);
     movieController.movieDetailsComponent.getElement().scrollTo(0, elementScrollTop);
   }
 

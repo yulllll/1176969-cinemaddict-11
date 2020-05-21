@@ -5,19 +5,23 @@ import UserProfileComponent from "./components/user-profile.js";
 import FiltersComponent from "./components/filters";
 import FooterStatisticsComponent from "./components/footer";
 import PageController from "./controllers/page-controller.js";
+import MoviesModel from "./models/movies.js";
 
-const filmsData = generateMovies(MOVIE_CARD_COUNT);
+const movieData = generateMovies(MOVIE_CARD_COUNT);
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const footerElement = document.querySelector(`.footer`);
 
-const userProfile = new UserProfileComponent(filmsData);
-const filters = new FiltersComponent(filmsData);
-const footerStatistics = new FooterStatisticsComponent(filmsData);
-const pageController = new PageController(mainElement);
+const userProfile = new UserProfileComponent(movieData);
+const filters = new FiltersComponent(movieData);
+const footerStatistics = new FooterStatisticsComponent(movieData);
+const moviesModel = new MoviesModel();
+const pageController = new PageController(mainElement, moviesModel);
 
 render(headerElement, userProfile);
 render(mainElement, filters);
 render(footerElement.querySelector(`.footer__statistics`), footerStatistics);
-pageController.render(filmsData);
+
+moviesModel.setMovies(movieData);
+pageController.render();
