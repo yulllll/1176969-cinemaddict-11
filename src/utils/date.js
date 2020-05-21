@@ -1,6 +1,6 @@
-const moment = require(`moment`);
-
 // TODO: потом разобрать
+// const moment = require(`moment`);
+import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 momentDurationFormatSetup(moment);
 
