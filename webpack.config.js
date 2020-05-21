@@ -1,7 +1,6 @@
 const path = require('path');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-
 module.exports = {
   mode: 'development', // Режим сборки
   entry: './src/main.js', // Точка входа приложения
