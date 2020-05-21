@@ -4,7 +4,7 @@ import {
   SHOWING_MOVIES_COUNT_BY_BUTTON,
   SHOWING_MOVIES_COUNT_ON_START,
   ExtraListTitles,
-} from "../utils/const.js";
+} from "../const.js";
 import NormalListComponent from "../components/movies/normal-list/normal-list.js";
 import NormalTitleComponent from "../components/movies/normal-list/normal-title.js";
 import NormalCardContainerComponent from "../components/movies/normal-list/normal-container.js";
@@ -72,18 +72,19 @@ export default class PageController {
       case SortType.SORT_DATE:
         sortedMovies = showingMovies.sort((a, b) => {
           // TODO: перепроверить после получения данных и переписать
-          const yearReleaseA = new Date(a.movieInfo.release.date).getFullYear();
-          const yearReleaseB = new Date(b.movieInfo.release.date).getFullYear();
+          const releaseDateA = new Date(a.movieInfo.release.date);
+          const releaseDateB = new Date(b.movieInfo.release.date);
 
-          return yearReleaseB - yearReleaseA;
+          return releaseDateB - releaseDateA;
         });
-
         break;
+
       case SortType.SORT_RATING:
         sortedMovies = showingMovies.sort((a, b) => {
           return b.movieInfo.totalRating - a.movieInfo.totalRating;
         });
         break;
+
       case SortType.DEFAULT:
         sortedMovies = showingMovies;
         break;
@@ -210,7 +211,7 @@ export default class PageController {
   onViewChange() {
     // TODO: колличество movie-controller.js
     this._showedMovieControllers.forEach((movie) => {
-      return movie.setDefaultView();
+      movie.setDefaultView();
     });
   }
 }

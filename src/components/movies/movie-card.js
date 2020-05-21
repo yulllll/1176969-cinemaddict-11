@@ -1,6 +1,10 @@
-import {getMaxDescriptionLength} from "../../utils/common.js";
-import {MAX_DESCRIPTION_LENGTH} from "../../utils/const.js";
-import AbstractSmartComponent from "../abstract/abstract-smart";
+import {getNewTrimmedString} from "../../utils/common.js";
+import {MAX_DESCRIPTION_LENGTH} from "../../const.js";
+import AbstractSmartComponent from "../abstract/abstract-smart.js";
+import {
+  getRuntimeFormat,
+  getReleaseYearFormat,
+} from "../../utils/date.js";
 
 const getMovieCardControlsTemplate = (controls) => {
   return controls.map(({item, className, check}) => {
@@ -19,11 +23,12 @@ const getMovieCardTemplate = (movie) => {
     {item: `Mark as favorite`, className: `favorite`, check: movie.userDetails.isFavorite}
   ];
 
-  const releaseYear = new Date(release.date).getFullYear();
+  const releaseYear = getReleaseYearFormat(release.date);
   const genre = genres.splice(0, 1).join(``);
-  const spliceDescription = getMaxDescriptionLength(description, MAX_DESCRIPTION_LENGTH);
+  const spliceDescription = getNewTrimmedString(description, MAX_DESCRIPTION_LENGTH);
   const commentsMovieLength = movie.comments.length;
   const movieCardControlsMarkup = getMovieCardControlsTemplate(movieCardControls);
+  const runtimeFormat = getRuntimeFormat(runtime);
 
   return (
     `<article class="film-card">
@@ -31,7 +36,7 @@ const getMovieCardTemplate = (movie) => {
         <p class="film-card__rating">${totalRating}</p>
         <p class="film-card__info">
             <span class="film-card__year">${releaseYear}</span>
-            <span class="film-card__duration">${runtime}</span>
+            <span class="film-card__duration">${runtimeFormat}</span>
             <span class="film-card__genre">${genre}</span>
         </p>
         <img src="./images/posters/${poster}" alt="" class="film-card__poster">

@@ -2,7 +2,7 @@ import MovieDetailsComponent from "../components/modal/movie-details.js";
 import MovieCardComponent from "../components/movies/movie-card";
 import {remove, render, replace} from "../utils/render";
 import {KeyCode} from "../utils/common";
-import {ModalMode} from "../utils/const.js";
+import {ModalMode} from "../const.js";
 
 
 export default class MovieController {

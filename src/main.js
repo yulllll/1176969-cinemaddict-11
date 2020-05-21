@@ -1,6 +1,6 @@
 import {generateMovies} from "./mock/movie.js";
 import {render} from "./utils/render.js";
-import {MOVIE_CARD_COUNT} from "./utils/const";
+import {MOVIE_CARD_COUNT} from "./const.js";
 import UserProfileComponent from "./components/user-profile.js";
 import FiltersComponent from "./components/filters";
 import FooterStatisticsComponent from "./components/footer";
