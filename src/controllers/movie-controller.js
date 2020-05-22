@@ -60,6 +60,11 @@ export default class MovieController {
     }
   }
 
+  destroy() {
+    remove(this._movieCardComponent);
+    document.removeEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
+  }
+
   _openMovieDetails() {
     this.movieDetailsComponent = this._getMovieDetailsComponent(this._movie);
 
