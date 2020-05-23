@@ -27,3 +27,9 @@ export const SortType = {
   SORT_DATE: `sort-date`,
   SORT_RATING: `sort-rating`
 };
+export const EMOTION_NAMES = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`
+];

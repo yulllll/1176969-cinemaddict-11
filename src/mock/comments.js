@@ -1,4 +1,5 @@
 import {getRandomItem} from "../utils/common.js";
+import {EMOTION_NAMES} from "../const.js";
 
 const authors = [
   `Tim Macoveev`,
@@ -12,19 +13,13 @@ const messages = [
   `Almost two hours? Seriously?`
 ];
 
-const emotions = [
-  `smile`,
-  `sleeping`,
-  `puke`,
-  `angry`
-];
-
 const generateComment = () => {
   return {
+    id: Math.ceil(Math.random() * 10),
     author: getRandomItem(authors),
     comment: getRandomItem(messages),
     date: +(new Date()) - Math.random() * 10 * 315360000,
-    emotion: getRandomItem(emotions),
+    emotion: getRandomItem(EMOTION_NAMES),
   };
 };
 
