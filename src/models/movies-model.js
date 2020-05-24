@@ -16,6 +16,10 @@ export default class MoviesModel {
     return getFilterMoviesData(this._movies, this._activeFilterType);
   }
 
+  // getMoviesAll() {
+  //   return this._films;
+  // }
+
   // getFilterMovies() {
   //   return getFilterMoviesData(this._movies, this._activeFilterType);
   // }

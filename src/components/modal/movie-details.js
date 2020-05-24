@@ -146,13 +146,21 @@ export default class MovieDetails extends AbstractSmartComponent {
     this._onWatchlistMovieControllerClick = null;
     this._onWatchedMovieControllerClick = null;
     this._onFavoriteMovieControllerClick = null;
-    this._setAddEmotionInNewComment();
+    this._deleteButtonListener = null;
+    this._setCommentListener = null;
     // TODO: реализация subscribeOnEvents
+
+    this._setAddEmotionInNewComment();
+    this.recoveryListeners();
   }
 
   getTemplate() {
     return getMovieDetailsTemplate(this._movie);
   }
+
+  // rerender() {
+  //   super.rerender();
+  // }
 
   recoveryListeners() {
     this.setCloseButtonClickListener(this._onCloseMovieDetailsButtonClick);
@@ -160,6 +168,8 @@ export default class MovieDetails extends AbstractSmartComponent {
     this.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
     this.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
     this._setAddEmotionInNewComment();
+    this.setDeleteCommentButtonClickListener(this._deleteButtonListener);
+    this.setAddCommentListener(this._setCommentListener);
   }
 
   setCloseButtonClickListener(cb) {
@@ -193,5 +203,51 @@ export default class MovieDetails extends AbstractSmartComponent {
       emotionImg.height = 55;
       emotionContainer.append(emotionImg);
     });
+  }
+
+  setDeleteCommentButtonClickListener(cb) {
+    const deleteCommentButtons = Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`));
+    if (deleteCommentButtons) {
+      for (const deleteCommentButton of deleteCommentButtons) {
+        deleteCommentButton.addEventListener(`click`, cb);
+      }
+    }
+
+    this._deleteButtonListener = cb;
+  }
+
+  createNewComment() {
+    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
+    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    const id = Math.ceil(Math.random() * 10);
+    const author = `Имя задаётся сервером`;
+    const emotion = emotionElement ? emotionElement.attributes[0].value : ``;
+    const comment = commentInputElement.value;
+    const date = +(new Date()) - Math.random() * 10 * 315360000;
+
+    if (!emotion || !comment) {
+      // TODO: не получилось добавить setCustomValidity(`Добавьте аватар`)
+      return false;
+    }
+
+    return {id, author, comment, date, emotion};
+  }
+
+  resetAddComment() {
+    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
+    commentInputElement.value = ``;
+    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emotionElement) {
+      emotionElement.remove();
+    }
+  }
+
+  setAddCommentListener(cb) {
+    const commentInputElement = this.getElement().querySelector(`.film-details__comment-input`);
+    commentInputElement.addEventListener(`keydown`, cb);
+
+    this._setCommentListener = cb;
   }
 }

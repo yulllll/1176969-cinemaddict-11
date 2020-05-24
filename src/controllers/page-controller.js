@@ -114,7 +114,7 @@ export default class PageController {
   }
 
   _renderShowMoreButton(moviesData) {
-    if (moviesData > this._showMoviesCount) {
+    if (moviesData.length > this._showMoviesCount) {
       render(this._normalListElement, this._showMoreButtonComponent);
 
       this._showMoreButtonComponent.setClickListener(() => this._onShowMoreButtonClick(moviesData));
