@@ -1,10 +1,6 @@
 import AbstractComponent from "./abstract/abstract-smart.js";
+import {SortType} from "../const.js";
 
-export const SortType = {
-  DEFAULT: `default`,
-  SORT_DATE: `sort-date`,
-  SORT_RATING: `sort-rating`
-};
 
 const createSortTemplate = (currentSortType) => {
   return (
@@ -30,6 +26,21 @@ export default class Sort extends AbstractComponent {
 
   getSortType() {
     return this._currentSortType;
+  }
+
+  resetSortToDefault() {
+    const defaultSortButton = this.getElement().querySelector(`a[data-sort="default"]`);
+    this._updateActiveClass(defaultSortButton);
+  }
+
+  _updateActiveClass(activeButton) {
+    const sortButtons = this.getElement().querySelectorAll(`.sort__button`);
+    sortButtons.forEach((button) => {
+      if (button.classList.contains(`sort__button--active`)) {
+        button.classList.remove(`sort__button--active`);
+      }
+      activeButton.classList.add(`sort__button--active`);
+    });
   }
 
   setSortButtonClickListener(cb) {

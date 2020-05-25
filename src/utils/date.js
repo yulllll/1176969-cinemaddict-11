@@ -1,7 +1,7 @@
-const moment = require(`moment`);
-
-// TODO: правильно ли подключил? Или как правильно указывать добавлыенные плагины и зависимости.
-const momentDurationFormatSetup = require(`moment-duration-format`);
+// TODO: потом разобрать
+// const moment = require(`moment`);
+import moment from "moment";
+import momentDurationFormatSetup from "moment-duration-format";
 momentDurationFormatSetup(moment);
 
 export const getRuntimeFormat = (minutes) => {

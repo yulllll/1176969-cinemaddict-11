@@ -101,7 +101,7 @@ const generateMovie = (movieID) => {
 
   return {
     id: movieID,
-    comments: generateComments(COMMENT_COUNT),
+    comments: generateComments(COMMENT_COUNT, movieID),
     movieInfo: {
       title: getRandomItem(titles),
       altTitle: getRandomItem(titles),

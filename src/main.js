@@ -2,22 +2,28 @@ import {generateMovies} from "./mock/movie.js";
 import {render} from "./utils/render.js";
 import {MOVIE_CARD_COUNT} from "./const.js";
 import UserProfileComponent from "./components/user-profile.js";
-import FiltersComponent from "./components/filters";
 import FooterStatisticsComponent from "./components/footer";
 import PageController from "./controllers/page-controller.js";
+import FiltersController from "./controllers/filters-controller.js";
+import MoviesModel from "./models/movies-model.js";
 
-const filmsData = generateMovies(MOVIE_CARD_COUNT);
+const moviesData = generateMovies(MOVIE_CARD_COUNT);
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const footerElement = document.querySelector(`.footer`);
 
-const userProfile = new UserProfileComponent(filmsData);
-const filters = new FiltersComponent(filmsData);
-const footerStatistics = new FooterStatisticsComponent(filmsData);
-const pageController = new PageController(mainElement);
+const userProfileComponent = new UserProfileComponent(moviesData);
+const footerStatisticsComponent = new FooterStatisticsComponent(moviesData);
 
-render(headerElement, userProfile);
-render(mainElement, filters);
-render(footerElement.querySelector(`.footer__statistics`), footerStatistics);
-pageController.render(filmsData);
+const moviesModel = new MoviesModel();
+
+const pageController = new PageController(mainElement, moviesModel);
+const filtersController = new FiltersController(mainElement, moviesModel);
+
+render(headerElement, userProfileComponent);
+render(footerElement.querySelector(`.footer__statistics`), footerStatisticsComponent);
+
+moviesModel.setMovies(moviesData);
+filtersController.render();
+pageController.render();

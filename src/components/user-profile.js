@@ -1,12 +1,7 @@
 import AbstractComponent from "./abstract/abstract.js";
-import {getControlsCount} from "../utils/common.js";
-import {ControlsPath} from "./filters.js";
+import {FilterTypes, UserRanks} from "../const.js";
+import {getFilterMoviesData} from "../utils/filters.js";
 
-const UserRanks = {
-  NOVICE: `Novice`,
-  FAN: `Fan`,
-  MOVIE_BUFF: `Movie Buff`,
-};
 
 export default class UserProfile extends AbstractComponent {
   constructor(movies) {
@@ -26,7 +21,7 @@ export default class UserProfile extends AbstractComponent {
 
   _getUserRating() {
     let userRank = null;
-    const userWatchedCount = getControlsCount(this._movies, ControlsPath.WATCHED);
+    const userWatchedCount = getFilterMoviesData(this._movies, FilterTypes.HISTORY).length;
 
     if (userWatchedCount > 1 && userWatchedCount <= 10) {
       userRank = UserRanks.NOVICE;
