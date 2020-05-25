@@ -104,7 +104,6 @@ export default class SectionStatistics extends AbstractSmartComponent {
   _renderChart() {
     const movies = this._movies;
     const topGenresWithIndex = getStatistics(movies).topGenresWithIndex;
-    console.log(topGenresWithIndex);
     const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
     statisticCtx.height = BAR_HEIGHT * topGenresWithIndex.length;
 
