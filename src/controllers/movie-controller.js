@@ -52,21 +52,6 @@ export default class MovieController {
 
     render(this._container, this._movieCardComponent);
 
-
-    // this.movieDetailsComponent.setAddCommentListener((evt) => {
-    //   const isEnterAndCtrl = evt.key === `Enter` && evt.ctrlKey;
-    //   if (isEnterAndCtrl) {
-    //     const newComment = this.movieDetailsComponent.createNewComment();
-    //     if (!newComment) {
-    //       return;
-    //     }
-    //     newComment.movieId = movie.id;
-    //     const newComments = movie.comments.concat(newComment);
-    //     this._onDataChange(this, movie, Object.assign(movie, {comments: newComments}));
-    //   }
-    // });
-
-
     if (oldMovieCard && oldMovieDetails) {
       replace(this._movieCardComponent, oldMovieCard);
       replace(this.movieDetailsComponent, oldMovieDetails);

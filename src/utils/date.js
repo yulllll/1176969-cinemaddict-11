@@ -19,3 +19,13 @@ export const getReleaseDateFormat = (minutes) => {
 export const getCommentTime = (minutes) => {
   return moment(minutes).fromNow();
 };
+
+export const getRuntimeSeparated = (minutes) => {
+  const time = moment.duration(minutes, `minutes`).format(`h m`);
+  const separateTime = time.split(` `);
+
+  return {
+    hours: separateTime[0],
+    minutes: separateTime[1],
+  };
+};
