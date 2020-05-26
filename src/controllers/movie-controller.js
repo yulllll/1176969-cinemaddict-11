@@ -82,9 +82,19 @@ export default class MovieController {
     movieCardComponent.setCardTitleClickListener(this._onCardTitleClick);
     movieCardComponent.setCardCommentsClickListener(this._onCardCommentsClick);
 
-    movieCardComponent.setAddWatchListClickListener(this._onWatchlistMovieControllerClick);
-    movieCardComponent.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
-    movieCardComponent.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
+    movieCardComponent.setAddWatchListClickListener((evt) => {
+      evt.preventDefault();
+      this._onWatchlistMovieControllerClick();
+    });
+
+    movieCardComponent.setAddWatchedClickListener((evt) => {
+      evt.preventDefault();
+      this._onWatchedMovieControllerClick();
+    });
+    movieCardComponent.setAddFavoriteClickListener((evt) => {
+      evt.preventDefault();
+      this._onFavoriteMovieControllerClick();
+    });
 
     return movieCardComponent;
   }

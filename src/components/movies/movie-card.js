@@ -24,7 +24,8 @@ const getMovieCardTemplate = (movie) => {
   ];
 
   const releaseYear = getReleaseYearFormat(release.date);
-  const genre = genres.splice(0, 1).join(``);
+  const copyGenres = genres.slice();
+  const genre = copyGenres.splice(0, 1).join(``);
   const spliceDescription = getNewTrimmedString(description, MAX_DESCRIPTION_LENGTH);
   const commentsMovieLength = movie.comments.length;
   const movieCardControlsMarkup = getMovieCardControlsTemplate(movieCardControls);
@@ -39,7 +40,7 @@ const getMovieCardTemplate = (movie) => {
             <span class="film-card__duration">${runtimeFormat}</span>
             <span class="film-card__genre">${genre}</span>
         </p>
-        <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+        <img src="./${poster}" alt="" class="film-card__poster">
         <p class="film-card__description">${spliceDescription}</p>
         <a class="film-card__comments">${commentsMovieLength} comments</a>
         <form class="film-card__controls">
@@ -88,14 +89,17 @@ export default class MovieCard extends AbstractSmartComponent {
   }
 
   setAddWatchListClickListener(cb) {
-    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, cb);
+    this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .addEventListener(`click`, (evt) => cb(evt));
   }
 
   setAddWatchedClickListener(cb) {
-    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, cb);
+    this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
+      .addEventListener(`click`, (evt) => cb(evt));
   }
 
   setAddFavoriteClickListener(cb) {
-    this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, cb);
+    this.getElement().querySelector(`.film-card__controls-item--favorite`)
+      .addEventListener(`click`, (evt) => cb(evt));
   }
 }
