@@ -33,3 +33,23 @@ export const EMOTION_NAMES = [
   `puke`,
   `angry`
 ];
+export const LIST_TITLES = {
+  WATCHED: `You watched`,
+  DURATION: `Total duration`,
+  GENRE: `Top genre`,
+};
+export const BAR_HEIGHT = 50;
+export const HIDDEN_CLASS = `visually-hidden`;
+export const SHOW_STATISTICS_PERIOD = {
+  TODAY: 0,
+  WEEK: 7,
+  MONTH: 30,
+  YEAR: 365,
+};
+export const STATISTIC_FILTER_NAMES = {
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+  ALL: `all-time`
+};

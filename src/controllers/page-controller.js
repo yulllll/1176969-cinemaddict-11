@@ -4,6 +4,7 @@ import {
   SHOWING_MOVIES_COUNT_BY_BUTTON,
   SHOWING_MOVIES_COUNT_ON_START,
   ExtraListTitles,
+  HIDDEN_CLASS,
 } from "../const.js";
 import {getSortedMovies} from "../utils/sort.js";
 
@@ -41,6 +42,7 @@ export default class PageController {
     this._normalListElement = this._normalListComponent.getElement();
     this._normalCardContainerElement = this._normalCardContainerComponent.getElement();
     this._mainMovieListsElement = this._mainMovieListsComponent.getElement();
+    this._sortElement = this._sortComponent.getElement();
 
     this._showMoviesCount = null;
     this._newMovies = null;
@@ -59,6 +61,16 @@ export default class PageController {
 
     this._renderNormalList(this._movies);
     this._renderExtraLists(this._movies);
+  }
+
+  show() {
+    this._mainMovieListsElement.classList.remove(HIDDEN_CLASS);
+    this._sortElement.classList.remove(HIDDEN_CLASS);
+  }
+
+  hide() {
+    this._mainMovieListsElement.classList.add(HIDDEN_CLASS);
+    this._sortElement.classList.add(HIDDEN_CLASS);
   }
 
   _renderMovieCard(container, moviesData, onDataChange, onViewChange) {
