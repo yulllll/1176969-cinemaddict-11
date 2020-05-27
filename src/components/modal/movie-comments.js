@@ -4,13 +4,14 @@ import AbstractSmartComponent from "../abstract/abstract-smart";
 
 const getUserCommentsTemplate = (movie) => {
   return movie.comments.map(({id, emotion, comment, author, date}) => {
-    if (id) {
-      const commentsTime = getCommentTime(date);
+    const commentsTime = date ? getCommentTime(date) : ``;
+    const commentsEmotionSrc = emotion ? `./images/emoji/${emotion}.png` : ``;
+    const commentsEmotionAlt = emotion ? `emoji-${emotion}` : ``;
 
-      return (
-        `<li id="${id}" class="film-details__comment">
+    return (
+      `<li id="${id}" class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+                <img src="${commentsEmotionSrc}" width="55" height="55" alt="${commentsEmotionAlt}">
               </span>
               <div>
                 <p class="film-details__comment-text">${comment}</p>
@@ -21,8 +22,7 @@ const getUserCommentsTemplate = (movie) => {
                 </p>
               </div>
             </li>`
-      );
-    }
+    );
   }).join(``);
 };
 

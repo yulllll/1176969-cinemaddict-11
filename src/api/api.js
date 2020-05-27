@@ -23,7 +23,7 @@ export default class API {
   }
 
   updateMovie(id, movie) {
-    console.log(movie);
+    // console.log(movie);
     return this._load({
       url: `movies/${id}`,
       method: METHOD_RESPONSE_NAMES.PUT,
@@ -33,7 +33,7 @@ export default class API {
       .then((response) => response.json())
       .then(MovieModel.parseMovie);
 
-    console.log(`OK`);
+    // console.log(`OK`);
   }
 
   _load({url, method = METHOD_RESPONSE_NAMES.GET, body = null, headers = new Headers()}) {

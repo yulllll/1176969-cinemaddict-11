@@ -222,7 +222,7 @@ export default class MovieDetails extends AbstractSmartComponent {
     const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
     const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
 
-    const id = Math.ceil(Math.random() * 10);
+    const id = String(Math.ceil(Math.random() * 10));
     const author = `Имя задаётся сервером`;
     const emotion = emotionElement ? emotionElement.dataset.emotion : ``;
     const comment = encode(commentInputElement.value);

@@ -31,7 +31,7 @@ export default class SectionStatistics extends AbstractSmartComponent {
     this._infoListComponent = null;
 
     this._chartComponent = new StatisticChartComponent();
-
+    this._myChart = null;
     this._render();
   }
 
@@ -108,7 +108,7 @@ export default class SectionStatistics extends AbstractSmartComponent {
     statisticCtx.height = BAR_HEIGHT * topGenresWithIndex.length;
 
     // TODO: ошибка ESLint
-    const myChart = new Chart(statisticCtx, {
+    this._myChart = new Chart(statisticCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
