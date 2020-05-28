@@ -1,19 +1,20 @@
 import {getCommentTime} from "../../utils/date.js";
 import {EMOTION_NAMES} from "../../const.js";
 import AbstractSmartComponent from "../abstract/abstract-smart";
-import {encode} from "he";
 
 const getUserCommentsTemplate = (movie) => {
   return movie.comments.map(({id, emotion, comment, author, date}) => {
-    const commentsTime = getCommentTime(date);
+    const commentsTime = date ? getCommentTime(date) : ``;
+    const commentsEmotionSrc = emotion ? `./images/emoji/${emotion}.png` : ``;
+    const commentsEmotionAlt = emotion ? `emoji-${emotion}` : ``;
 
     return (
       `<li id="${id}" class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="${emotion}" width="55" height="55" alt="emoji-${emotion}">
+                <img src="${commentsEmotionSrc}" width="55" height="55" alt="${commentsEmotionAlt}">
               </span>
               <div>
-                <p class="film-details__comment-text">${encode(comment)}</p>
+                <p class="film-details__comment-text">${comment}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${commentsTime}</span>

@@ -53,3 +53,13 @@ export const STATISTIC_FILTER_NAMES = {
   YEAR: `year`,
   ALL: `all-time`
 };
+export const METHOD_RESPONSE_NAMES = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`,
+};
+export const STATUS_CODE = {
+  OK: 200,
+  MULTIPLE_CHOICES: 300,
+};

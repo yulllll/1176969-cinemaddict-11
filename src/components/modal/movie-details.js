@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "../abstract/abstract-smart.js";
 import MovieComments from "./movie-comments.js";
+import {encode} from "he";
 
 import {
   getReleaseDateFormat,
@@ -37,9 +38,9 @@ const getMovieDetailsInfoTemplate = (movie) => {
   return (
     `<div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+          <img class="film-details__poster-img" src="./${poster}" alt="">
 
-          <p class="film-details__age">${ageRating}</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
 
         <div class="film-details__info">
@@ -199,6 +200,7 @@ export default class MovieDetails extends AbstractSmartComponent {
       }
 
       emotionImg.src = `./images/emoji/${evt.target.value}.png`;
+      emotionImg.dataset.emotion = evt.target.value;
       emotionImg.width = 55;
       emotionImg.height = 55;
       emotionContainer.append(emotionImg);
@@ -220,10 +222,10 @@ export default class MovieDetails extends AbstractSmartComponent {
     const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
     const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
 
-    const id = Math.ceil(Math.random() * 10);
+    const id = String(Math.ceil(Math.random() * 10));
     const author = `Имя задаётся сервером`;
-    const emotion = emotionElement ? emotionElement.attributes[0].value : ``;
-    const comment = commentInputElement.value;
+    const emotion = emotionElement ? emotionElement.dataset.emotion : ``;
+    const comment = encode(commentInputElement.value);
     const date = +(new Date()) - Math.random() * 10 * 315360000;
 
     if (!emotion || !comment) {
@@ -235,6 +237,7 @@ export default class MovieDetails extends AbstractSmartComponent {
   }
 
   resetAddComment() {
+    // console.log(this._element); // null
     const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
     commentInputElement.value = ``;
     const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;

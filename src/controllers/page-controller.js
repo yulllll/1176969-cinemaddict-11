@@ -22,10 +22,11 @@ import MovieController from "./movie-controller.js";
 
 
 export default class PageController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
     this._movies = null;
+    this._api = api;
 
     this._sortComponent = new SortComponent();
     this._mainMovieListsComponent = new MovieContainerComponent();
@@ -83,11 +84,21 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldMoviesData, newUserDetailsData, elementScrollTop) {
-    const isSuccess = this._moviesModel.updateMovies(oldMoviesData.id, newUserDetailsData);
+    // const isSuccess = this._moviesModel.updateMovies(oldMoviesData.id, newUserDetailsData);
+    //
+    // if (isSuccess) {
+    //   movieController.render(newUserDetailsData);
+    // }
 
-    if (isSuccess) {
-      movieController.render(newUserDetailsData);
-    }
+    this._api.updateMovie(oldMoviesData.id, newUserDetailsData)
+      .then((MovieModel) => {
+        const isSuccess = this._moviesModel.updateFilms(oldMoviesData.id, MovieModel);
+
+        if (isSuccess) {
+          movieController.render(MovieModel);
+          this._updateMovieCards(this._showMoviesCount);
+        }
+      });
 
     movieController.movieDetailsComponent.getElement().scrollTo(0, elementScrollTop);
   }

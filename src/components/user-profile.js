@@ -2,14 +2,14 @@ import AbstractComponent from "./abstract/abstract.js";
 import {getUserRank} from "../utils/user-rank.js";
 
 export default class UserProfile extends AbstractComponent {
-  constructor(movies) {
+  constructor() {
     super();
 
-    this._movies = movies;
+    this._movies = null;
   }
 
   getTemplate() {
-    const userRank = getUserRank(this._movies);
+    const userRank = this._movies ? getUserRank(this._movies) : ``;
 
     return (
       `<section class="header__profile profile">
@@ -17,5 +17,9 @@ export default class UserProfile extends AbstractComponent {
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
      </section>`
     );
+  }
+
+  setMovies(movies) {
+    this._movies = movies;
   }
 }
