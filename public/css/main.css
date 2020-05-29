@@ -1,6 +1,7 @@
 :root {
   --text-color: #fff;
   --text-color-active: #ffe800;
+  --text-color-no-active: #f1f5db;
   --text-color-good: #7bc549;
   --text-color-average: #e49a27;
   --text-color-poor: red;
@@ -15,7 +16,6 @@
   --font-size-smaller: 14px;
   --font-size-bigger: 20px;
 }
-
 
 html {
   background: #121213 url('../images/background.png') no-repeat 60% 0;
@@ -247,6 +247,10 @@ button {
 .main-navigation__item--active,
 .main-navigation__additional--active {
   color: var(--text-color-active);
+}
+
+.main-navigation__item--no-active {
+  color: var(--text-color-no-active);
 }
 
 .result {
@@ -1074,4 +1078,29 @@ button {
   min-height: 300px;
   padding-top: 50px;
   padding-bottom: 50px;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+.shake {
+  animation: shake 0.6s;
 }
