@@ -1,16 +1,29 @@
-import AbstractComponent from "./abstract/abstract.js";
+import AbstractSmartComponent from "./abstract/abstract-smart";
 import {FilterTypes} from "../const.js";
 import {getFilterMoviesData} from "../utils/filters.js";
 
-
-export default class Filters extends AbstractComponent {
+export default class Filters extends AbstractSmartComponent {
   constructor(movies, activeType) {
     super();
 
     this._movies = movies;
     this._activeType = activeType;
-
     this._menuItems = [];
+
+    this._onFilterChange = null;
+  }
+
+  recoveryListeners() {
+    this.setFilterChangeListener(this._onFilterChange);
+  }
+
+  setFilterChangeListener(cb) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      const filterType = evt.target.textContent.replace(/\d/g, ``).trim();
+      cb(filterType);
+    });
+
+    this._onFilterChange = cb;
   }
 
   getTemplate() {
@@ -23,7 +36,6 @@ export default class Filters extends AbstractComponent {
     ];
 
     const copyMenuItems = this._menuItems.slice();
-    // TODO: ?
     const allItem = copyMenuItems.splice(0, 1);
     const statsItem = copyMenuItems.splice(copyMenuItems.length - 1, 1);
     const filterItems = copyMenuItems;
@@ -39,26 +51,16 @@ export default class Filters extends AbstractComponent {
     );
   }
 
-  setFilterChangeListener(cb) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      const filterType = evt.target.textContent.replace(/\d/g, ``).trim();
-      cb(filterType);
-    });
-  }
-
   _getMenuItems(item) {
-
     return (
       `<a href="#${item.href}" class="main-navigation__${item.className} ${item.isActive ? `main-navigation__item--active` : ``}">${item.item}</a>`
     );
   }
 
   _getFilterItems(items) {
-    // TODO: если у кинокарточки нет раздела = 0, то раздел
-    //  не отрисовываем или лучше добавить класс - no-active
-    return items.filter((item) => item.count).map((item) => {
+    return items.map((item) => {
       return (
-        `<a href="#${item.href}" class="main-navigation__${item.className} ${item.isActive ? `main-navigation__item--active` : `222`}">${item.item}<span class="main-navigation__item-count">${item.count}</span></a>`
+        `<a href="#${item.href}" class="main-navigation__${item.className} ${item.isActive ? `main-navigation__item--active` : `main-navigation__item--no-active`}">${item.item}<span class="main-navigation__item-count">${item.count}</span></a>`
       );
     }).join(``);
   }

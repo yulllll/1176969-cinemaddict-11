@@ -1,27 +1,11 @@
 import AbstractComponent from "./abstract/abstract-smart.js";
 import {SortType} from "../const.js";
 
-
-const createSortTemplate = (currentSortType) => {
-  return (
-    `<ul class="sort">
-      <li><a href="#" data-sort="${SortType.DEFAULT}" class="sort__button ${currentSortType === SortType.DEFAULT ? `sort__button--active` : ``}">Sort by default</a></li>
-      <li><a href="#" data-sort="${SortType.SORT_DATE}" class="sort__button ${currentSortType === SortType.SORT_DATE ? `sort__button--active` : ``}">Sort by date</a></li>
-      <li><a href="#" data-sort="${SortType.SORT_RATING}" class="sort__button" ${currentSortType === SortType.SORT_RATING ? `sort__button--active` : ``}>Sort by rating</a></li>
-    </ul>`
-  );
-};
-
 export default class Sort extends AbstractComponent {
   constructor() {
     super();
 
     this._currentSortType = SortType.DEFAULT;
-    this._sortTypeHandler = null;
-  }
-
-  getTemplate() {
-    return createSortTemplate(this._currentSortType);
   }
 
   getSortType() {
@@ -31,16 +15,6 @@ export default class Sort extends AbstractComponent {
   resetSortToDefault() {
     const defaultSortButton = this.getElement().querySelector(`a[data-sort="default"]`);
     this._updateActiveClass(defaultSortButton);
-  }
-
-  _updateActiveClass(activeButton) {
-    const sortButtons = this.getElement().querySelectorAll(`.sort__button`);
-    sortButtons.forEach((button) => {
-      if (button.classList.contains(`sort__button--active`)) {
-        button.classList.remove(`sort__button--active`);
-      }
-      activeButton.classList.add(`sort__button--active`);
-    });
   }
 
   setSortButtonClickListener(cb) {
@@ -70,6 +44,30 @@ export default class Sort extends AbstractComponent {
 
       this._currentSortType = sortType;
       cb(this._currentSortType);
+    });
+  }
+
+  getTemplate() {
+    return this._getSortTemplate(this._currentSortType);
+  }
+
+  _getSortTemplate(currentSortType) {
+    return (
+      `<ul class="sort">
+        <li><a href="#" data-sort="${SortType.DEFAULT}" class="sort__button ${currentSortType === SortType.DEFAULT ? `sort__button--active` : ``}">Sort by default</a></li>
+        <li><a href="#" data-sort="${SortType.SORT_DATE}" class="sort__button ${currentSortType === SortType.SORT_DATE ? `sort__button--active` : ``}">Sort by date</a></li>
+        <li><a href="#" data-sort="${SortType.SORT_RATING}" class="sort__button" ${currentSortType === SortType.SORT_RATING ? `sort__button--active` : ``}>Sort by rating</a></li>
+      </ul>`
+    );
+  }
+
+  _updateActiveClass(activeButton) {
+    const sortButtons = this.getElement().querySelectorAll(`.sort__button`);
+    sortButtons.forEach((button) => {
+      if (button.classList.contains(`sort__button--active`)) {
+        button.classList.remove(`sort__button--active`);
+      }
+      activeButton.classList.add(`sort__button--active`);
     });
   }
 }

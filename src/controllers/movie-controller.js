@@ -1,16 +1,20 @@
 import MovieDetailsComponent from "../components/modal/movie-details.js";
 import MovieCardComponent from "../components/movies/movie-card";
 import {remove, render, replace} from "../utils/render";
-import {KeyCode} from "../utils/common";
+import {KEY_CODE} from "../const";
 import {ModalMode} from "../const.js";
-
+import FilmModel from "../models/movie-model";
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, api, onCommentChange) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
+    this._onCommentChange = onCommentChange;
+    this._api = api;
+
+    this._comments = null;
     this._movie = null;
     this._movieCardComponent = null;
     this.movieDetailsComponent = null;
@@ -18,18 +22,15 @@ export default class MovieController {
     this.bodyElement = document.querySelector(`body`);
 
     this._openMovieDetails = this._openMovieDetails.bind(this);
-
     this._onCardPosterClick = this._onCardPosterClick.bind(this);
     this._onCardTitleClick = this._onCardTitleClick.bind(this);
     this._onCardCommentsClick = this._onCardCommentsClick.bind(this);
-    // TODO:
-    // this._onCloseMovieDetailsKeydown = this._onCloseMovieDetailsKeydown.bind(this);
-    // this._onCloseMovieDetailsButtonClick = this._onCloseMovieDetailsButtonClick.bind(this);
-
     this._onWatchlistMovieControllerClick = this._onWatchlistMovieControllerClick.bind(this);
     this._onWatchedMovieControllerClick = this._onWatchedMovieControllerClick.bind(this);
     this._onFavoriteMovieControllerClick = this._onFavoriteMovieControllerClick.bind(this);
     this.setDefaultView = this.setDefaultView.bind(this);
+    this._closePopup = this._closePopup.bind(this);
+    this._onCloseMovieDetailsKeydown = this._onCloseMovieDetailsKeydown.bind(this);
 
     this._modalMode = ModalMode.MODAL_HIDDEN;
   }
@@ -40,15 +41,15 @@ export default class MovieController {
     }
   }
 
-
-  render(movie) {
+  render(movie, comments) {
     this._movie = movie;
+    this._comments = comments;
 
     const oldMovieCard = this._movieCardComponent;
     const oldMovieDetails = this.movieDetailsComponent;
 
     this._movieCardComponent = this._getMovieCardComponent(this._movie);
-    this.movieDetailsComponent = this._getMovieDetailsComponent(this._movie);
+    this.movieDetailsComponent = this._getMovieDetailsComponent(this._movie, this._comments);
 
     render(this._container, this._movieCardComponent);
 
@@ -60,19 +61,13 @@ export default class MovieController {
     }
   }
 
+  getFilm() {
+    return this._movieCardComponent.getFilmData();
+  }
+
   destroy() {
     remove(this._movieCardComponent);
     document.removeEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
-  }
-
-  _openMovieDetails() {
-    this.movieDetailsComponent = this._getMovieDetailsComponent(this._movie);
-
-    render(this.bodyElement, this.movieDetailsComponent);
-
-    this._onViewChange();
-
-    this._modalMode = ModalMode.MODAL_OPEN;
   }
 
   _getMovieCardComponent(movie) {
@@ -111,11 +106,12 @@ export default class MovieController {
     this._openMovieDetails();
   }
 
-  _getMovieDetailsComponent(movie) {
-    const movieDetailsComponent = new MovieDetailsComponent(movie);
-    // TODO: нужно проверить правильность, не получилось сделать без передачи переменной,
-    //  при повторном клике на карточку окно уже не закрывалось, + строки 26 и 27
-    movieDetailsComponent.setCloseButtonClickListener(() => this._onCloseMovieDetailsButtonClick(movieDetailsComponent));
+  _getMovieDetailsComponent(movie, comments) {
+    const movieDetailsComponent = new MovieDetailsComponent(movie, comments);
+
+    movieDetailsComponent.setCloseButtonClickListener(() => {
+      this._onCloseMovieDetailsButtonClick(movieDetailsComponent);
+    });
 
     movieDetailsComponent.setAddWatchListClickListener(() => {
       const modalElement = movieDetailsComponent.getElement();
@@ -123,12 +119,14 @@ export default class MovieController {
 
       this._onWatchlistMovieControllerClick(modalElementScrollTop);
     });
+
     movieDetailsComponent.setAddWatchedClickListener(() => {
       const modalElement = movieDetailsComponent.getElement();
       const modalElementScrollTop = modalElement.scrollTop;
 
       this._onWatchedMovieControllerClick(modalElementScrollTop);
     });
+
     movieDetailsComponent.setAddFavoriteClickListener(() => {
       const modalElement = movieDetailsComponent.getElement();
       const modalElementScrollTop = modalElement.scrollTop;
@@ -136,104 +134,102 @@ export default class MovieController {
       this._onFavoriteMovieControllerClick(modalElementScrollTop);
     });
 
-    // TODO: удаляется по два комментария
-    movieDetailsComponent.setDeleteCommentButtonClickListener((evt) => {
+    movieDetailsComponent.setDeleteCommentButtonClickListener((removeCommentId) => {
       const modalElement = movieDetailsComponent.getElement();
       const modalElementScrollTop = modalElement.scrollTop;
 
-      this._onDeleteCommentsButtonClick(evt, modalElementScrollTop);
+      movieDetailsComponent.disableDeleteButton();
+
+      const newFilms = FilmModel.clone(this._movie);
+      const newComments = this._comments.filter((comment) => comment.id !== removeCommentId);
+
+      newFilms.comments = newFilms.comments.filter((commentId) => commentId !== removeCommentId);
+
+      this._api.deleteComment(removeCommentId)
+        .then(() => {
+          this._onCommentChange(this, this._movie, newFilms, newComments, modalElementScrollTop);
+        })
+        .catch(() => {
+          movieDetailsComponent.enableDeleteButton();
+          movieDetailsComponent.shakeActiveDeleteComment();
+        });
     });
 
-    movieDetailsComponent.setAddCommentListener((evt) => {
+    movieDetailsComponent.setAddNewCommentListener((newComment) => {
       const modalElement = movieDetailsComponent.getElement();
       const modalElementScrollTop = modalElement.scrollTop;
 
-      this._onCreateNewCommentInputKeydown(evt, movieDetailsComponent, modalElementScrollTop);
-    });
+      if (newComment) {
+        movieDetailsComponent.disableActiveTextCommentField();
+        const newFilm = FilmModel.clone(this._movie);
 
-    document.addEventListener(`keydown`, (evt) => this._onCloseMovieDetailsKeydown(evt, movieDetailsComponent));
+        this._api.createComment(this._movie.id, newComment)
+          .then((comments) => {
+            newFilm.comments = comments.map((comment) => comment.id);
+            this._onCommentChange(this, this._movie, newFilm, comments, modalElementScrollTop);
+          })
+          .catch(() => {
+            movieDetailsComponent.setRedFrameTextCommentField();
+            movieDetailsComponent.shake();
+          });
+      } else {
+        movieDetailsComponent.setRedFrameTextCommentField();
+        movieDetailsComponent.shake();
+      }
+    });
 
     return movieDetailsComponent;
   }
 
-  _onCreateNewCommentInputKeydown(evt, movieDetailsComponent, modalElementScrollTop) {
-    const isEnterAndCtrl = evt.key === `Enter` && evt.ctrlKey;
-
-    if (isEnterAndCtrl) {
-      const newComment = movieDetailsComponent.createNewComment();
-      if (!newComment) {
-        return;
-      }
-
-      newComment.movieID = this._movie.id;
-      const newComments = this._movie.comments.concat(newComment);
-
-      this._onDataChange(this, this._movie, Object.assign(this._movie, {comments: newComments}), modalElementScrollTop);
-    }
+  _openMovieDetails() {
+    this._onViewChange();
+    this.movieDetailsComponent = this._getMovieDetailsComponent(this._movie, this._comments);
+    render(this.bodyElement, this.movieDetailsComponent);
+    this._modalMode = ModalMode.MODAL_OPEN;
+    document.addEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
   }
 
-  _onDeleteCommentsButtonClick(evt, modalElementScrollTop) {
-    evt.preventDefault();
-
-    const commentElement = evt.target.closest(`.film-details__comment`);
-    const commentId = commentElement.id;
-    const comments = this._movie.comments.filter((comment) => {
-      return comment.id !== Number(commentId);
-    });
-
-    this._onDataChange(this, this._movie, Object.assign(this._movie, {comments}), modalElementScrollTop);
+  _closePopup() {
+    this._modalMode = ModalMode.MODAL_HIDDEN;
+    const movieDetailsComponent = this.movieDetailsComponent;
+    movieDetailsComponent.resetAddComment();
+    remove(movieDetailsComponent);
+    document.removeEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
   }
 
-  _onCloseMovieDetailsKeydown(evt, movieDetailsComponent) {
-    const isPressEscape = evt.keyCode === KeyCode.ESCAPE;
+  _onCloseMovieDetailsKeydown(evt) {
+    const isPressEscape = evt.keyCode === KEY_CODE.ESCAPE;
 
     if (isPressEscape) {
-      movieDetailsComponent.resetAddComment();
-      remove(movieDetailsComponent);
+      this._closePopup();
     }
-
-    document.removeEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
-    this._modalMode = ModalMode.MODAL_HIDDEN;
   }
 
   _onCloseMovieDetailsButtonClick(movieDetailsComponent) {
     movieDetailsComponent.resetAddComment();
     remove(movieDetailsComponent);
-
     document.removeEventListener(`keydown`, this._onCloseMovieDetailsKeydown);
     this._modalMode = ModalMode.MODAL_HIDDEN;
   }
 
   _onWatchlistMovieControllerClick(elementScrollTop) {
-    // TODO: смотреть данные, объект в объекте,
-    //  по другому не получилось вернуть новый изменённый
-    const newUserDetails = Object.assign({}, this._movie.userDetails,
-        {isWatchlist: !this._movie.userDetails.isWatchlist});
-    const newUserDetailsData = Object.assign({}, this._movie,
-        {userDetails: newUserDetails});
+    const newMovie = FilmModel.clone(this._movie);
+    newMovie.userDetails.isWatchlist = !newMovie.userDetails.isWatchlist;
 
-    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
+    this._onDataChange(this, this._movie, newMovie, elementScrollTop);
   }
 
   _onWatchedMovieControllerClick(elementScrollTop) {
-    // TODO: смотреть данные, объект в объекте,
-    //  по другому не получилось вернуть новый изменённый
-    const newUserDetails = Object.assign({}, this._movie.userDetails,
-        {isWatched: !this._movie.userDetails.isWatched});
-    const newUserDetailsData = Object.assign({}, this._movie,
-        {userDetails: newUserDetails});
+    const newMovie = FilmModel.clone(this._movie);
+    newMovie.userDetails.isWatched = !newMovie.userDetails.isWatched;
 
-    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
+    this._onDataChange(this, this._movie, newMovie, elementScrollTop);
   }
 
   _onFavoriteMovieControllerClick(elementScrollTop) {
-    // TODO: смотреть данные, объект в объекте,
-    //  по другому не получилось вернуть новый изменённый
-    const newUserDetails = Object.assign({}, this._movie.userDetails,
-        {isFavorite: !this._movie.userDetails.isFavorite});
-    const newUserDetailsData = Object.assign({}, this._movie,
-        {userDetails: newUserDetails});
+    const newMovie = FilmModel.clone(this._movie);
+    newMovie.userDetails.isFavorite = !newMovie.userDetails.isFavorite;
 
-    this._onDataChange(this, this._movie, newUserDetailsData, elementScrollTop);
+    this._onDataChange(this, this._movie, newMovie, elementScrollTop);
   }
 }

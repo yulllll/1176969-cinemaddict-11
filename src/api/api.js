@@ -1,6 +1,5 @@
-import MovieModel from "../models/movie-model.js";
-import CommentsModel from "../models/comments-model.js";
-
+import Comment from "../models/comment-model";
+import Film from "../models/movie-model.js";
 import {METHOD_RESPONSE_NAMES} from "../const.js";
 import {checkResponseStatus} from "../utils/api.js";
 
@@ -12,28 +11,43 @@ export default class API {
 
   getMovies() {
     return this._load({url: `movies`})
+      .then(checkResponseStatus)
       .then((response) => response.json())
-      .then(MovieModel.parseMovies);
+      .then(Film.parseFilms);
   }
 
-  getComments(movieId) {
-    return this._load({url: `comments/${movieId}`})
-      .then((response) => response.json())
-      .then((CommentsModel.parseComments));
-  }
-
-  updateMovie(id, movie) {
-    // console.log(movie);
+  updateFilm(id, data) {
     return this._load({
       url: `movies/${id}`,
       method: METHOD_RESPONSE_NAMES.PUT,
-      body: JSON.stringify(MovieModel.toRAW(movie)),
+      body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
-      .then(MovieModel.parseMovie);
+      .then(Film.parseFilm);
+  }
 
-    // console.log(`OK`);
+  getComments(id) {
+    return this._load({url: `comments/${id}`})
+      .then(checkResponseStatus)
+      .then((response) => response.json())
+      .then(Comment.parseComments);
+  }
+
+  deleteComment(commentId) {
+    return this._load({url: `comments/${commentId}`, method: METHOD_RESPONSE_NAMES.DELETE,
+    });
+  }
+
+  createComment(filmId, comment) {
+    return this._load({
+      url: `comments/${filmId}`,
+      method: METHOD_RESPONSE_NAMES.POST,
+      body: JSON.stringify(comment),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then((film) => Comment.parseComments(film.comments));
   }
 
   _load({url, method = METHOD_RESPONSE_NAMES.GET, body = null, headers = new Headers()}) {

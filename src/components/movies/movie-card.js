@@ -1,10 +1,7 @@
 import {getNewTrimmedString} from "../../utils/common.js";
 import {MAX_DESCRIPTION_LENGTH} from "../../const.js";
 import AbstractSmartComponent from "../abstract/abstract-smart.js";
-import {
-  getRuntimeFormat,
-  getReleaseYearFormat,
-} from "../../utils/date.js";
+import {getRuntimeFormat, getReleaseYearFormat} from "../../utils/date.js";
 
 const getMovieCardControlsTemplate = (controls) => {
   return controls.map(({item, className, check}) => {
@@ -70,6 +67,10 @@ export default class MovieCard extends AbstractSmartComponent {
     this.setCardPosterClickListener(this._onCardPosterClick);
     this.setCardTitleClickListener(this._onCardTitleClick);
     this.setCardCommentsClickListener(this._onCardCommentsClick);
+  }
+
+  getFilmData() {
+    return this._movie;
   }
 
   rerender() {

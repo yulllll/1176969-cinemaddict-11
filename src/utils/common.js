@@ -1,6 +1,3 @@
-export const KeyCode = {
-  ESCAPE: 27,
-};
 // Произвольный item массива
 export const getRandomItem = (array) => {
   const random = Math.floor(Math.random() * array.length);
@@ -17,20 +14,7 @@ export const getRandomIntervalNumber = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
-
-// Количество активных киноконтроллеров в кинокарточке
-export const getControlsCount = (array, propPath) => {
-  const propNames = propPath.split(`.`);
-
-  // Массив из положительных элементов
-  const affArray = array.filter((item) => {
-    return propNames.reduce((obj, name) => obj[name], item);
-  });
-
-  return affArray.length;
-};
-
-// Длинна заголовка
+// Длинна описания
 export const getNewTrimmedString = (string, limit) => {
   let newString;
   if (string.length > limit) {

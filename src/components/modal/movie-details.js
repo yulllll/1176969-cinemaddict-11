@@ -1,11 +1,9 @@
 import AbstractSmartComponent from "../abstract/abstract-smart.js";
 import MovieComments from "./movie-comments.js";
 import {encode} from "he";
-
-import {
-  getReleaseDateFormat,
-  getRuntimeFormat,
-} from "../../utils/date.js";
+import {shaking} from "../../utils/animation.js";
+import {getReleaseDateFormat, getRuntimeFormat} from "../../utils/date.js";
+import {COMMENT_BUTTON_STATUS, KEY_CODE} from "../../const.js";
 
 const getGenresInfoTemplate = (genres) => {
   return genres.map((genre) => {
@@ -109,10 +107,10 @@ const getMovieDetailsControlsTemplate = (movie) => {
   }).join(``);
 };
 
-const getMovieDetailsTemplate = (movie) => {
+const getMovieDetailsTemplate = (movie, comments) => {
   const infoMarkup = getMovieDetailsInfoTemplate(movie);
   const controlsMarkup = getMovieDetailsControlsTemplate(movie);
-  const commentsSectionTemplate = new MovieComments(movie).getTemplate();
+  const commentsSectionTemplate = new MovieComments(movie, comments).getTemplate();
 
   return (
     `<section class="film-details">
@@ -137,10 +135,12 @@ const getMovieDetailsTemplate = (movie) => {
 
 
 export default class MovieDetails extends AbstractSmartComponent {
-  constructor(movie) {
+  constructor(movie, comments) {
     super();
 
     this._movie = movie;
+    this._comments = comments;
+
     this._element = this.getElement();
 
     this._onCloseMovieDetailsButtonClick = null;
@@ -149,48 +149,137 @@ export default class MovieDetails extends AbstractSmartComponent {
     this._onFavoriteMovieControllerClick = null;
     this._deleteButtonListener = null;
     this._setCommentListener = null;
-    // TODO: реализация subscribeOnEvents
+    this._activeDeleteCommentButton = null;
+    this._activeDeleteComment = null;
+    this._activeTextCommentField = null;
 
     this._setAddEmotionInNewComment();
     this.recoveryListeners();
   }
 
   getTemplate() {
-    return getMovieDetailsTemplate(this._movie);
+    return getMovieDetailsTemplate(this._movie, this._comments);
   }
-
-  // rerender() {
-  //   super.rerender();
-  // }
 
   recoveryListeners() {
     this.setCloseButtonClickListener(this._onCloseMovieDetailsButtonClick);
     this.setAddWatchListClickListener(this._onWatchlistMovieControllerClick);
     this.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
     this.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
+    this.setDeleteCommentButtonClickListener(this._deleteCommentButtonClickListener);
+    this.setAddNewCommentListener(this._addNewCommentListener);
     this._setAddEmotionInNewComment();
-    this.setDeleteCommentButtonClickListener(this._deleteButtonListener);
-    this.setAddCommentListener(this._setCommentListener);
   }
 
   setCloseButtonClickListener(cb) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, cb);
+    this._onCloseMovieDetailsButtonClick = cb;
   }
 
   setAddWatchListClickListener(cb) {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, cb);
+    this._onWatchlistMovieControllerClick = cb;
   }
 
   setAddWatchedClickListener(cb) {
     this.getElement().querySelector(`#watched`).addEventListener(`click`, cb);
+    this._onWatchedMovieControllerClick = cb;
   }
 
   setAddFavoriteClickListener(cb) {
     this.getElement().querySelector(`#favorite`).addEventListener(`click`, cb);
+    this._onFavoriteMovieControllerClick = cb;
+  }
+
+  setDeleteCommentButtonClickListener(cb) {
+    const deleteCommentsButtons = this._element.querySelectorAll(`.film-details__comment-delete`);
+
+    if (deleteCommentsButtons) {
+      Array.from(deleteCommentsButtons).forEach((button) => button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this._activeDeleteCommentButton = button;
+        this._activeDeleteComment = button.closest(`.film-details__comment`);
+        const activeDeleteCommentId = this._activeDeleteComment.id;
+
+        cb(activeDeleteCommentId);
+      }));
+    }
+
+    this._deleteCommentButtonClickListener = cb;
+  }
+
+  setAddNewCommentListener(cb) {
+    const textCommentElement = this.getElement().querySelector(`.film-details__comment-input`);
+
+    textCommentElement.addEventListener(`keydown`, (evt) => {
+      const isEnterAndCtrl = evt.keyCode === KEY_CODE.ENTER && evt.ctrlKey;
+      this._activeTextCommentField = textCommentElement;
+      if (isEnterAndCtrl) {
+        const newComment = this._getNewComment();
+
+        cb(newComment);
+      }
+    });
+
+    this._addNewCommentListener = cb;
+  }
+
+  resetAddComment() {
+    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
+    commentInputElement.value = ``;
+    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    if (emotionElement) {
+      emotionElement.remove();
+    }
+  }
+
+  enableDeleteButton() {
+    this._activeDeleteCommentButton.disabled = false;
+    this._activeDeleteCommentButton.textContent = COMMENT_BUTTON_STATUS.DELETE;
+  }
+
+  disableDeleteButton() {
+    this._activeDeleteCommentButton.disabled = true;
+    this._activeDeleteCommentButton.textContent = COMMENT_BUTTON_STATUS.DELETING;
+  }
+
+  disableActiveTextCommentField() {
+    this._activeTextCommentField.disabled = true;
+  }
+
+  setRedFrameTextCommentField() {
+    this._activeTextCommentField.style.border = `1px solid red`;
+  }
+
+  shake() {
+    shaking(this.getElement());
+  }
+
+  shakeActiveDeleteComment() {
+    shaking(this._activeDeleteComment);
+  }
+
+  _getNewComment() {
+    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
+    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
+
+    const comment = encode(commentInputElement.value);
+    const emotion = emotionElement.dataset.emotion;
+    const date = new Date();
+
+    if (!emotion || !comment) {
+      return null;
+    }
+
+    return {
+      comment,
+      date,
+      emotion,
+    };
   }
 
   _setAddEmotionInNewComment() {
-    // TODO: добавить проверку если нет комментариев?
     this._element.querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
       const emotionContainer = this._element.querySelector(`.film-details__add-emoji-label`);
       let emotionImg = emotionContainer.querySelector(`img`);
@@ -205,52 +294,5 @@ export default class MovieDetails extends AbstractSmartComponent {
       emotionImg.height = 55;
       emotionContainer.append(emotionImg);
     });
-  }
-
-  setDeleteCommentButtonClickListener(cb) {
-    const deleteCommentButtons = Array.from(this.getElement().querySelectorAll(`.film-details__comment-delete`));
-    if (deleteCommentButtons) {
-      for (const deleteCommentButton of deleteCommentButtons) {
-        deleteCommentButton.addEventListener(`click`, cb);
-      }
-    }
-
-    this._deleteButtonListener = cb;
-  }
-
-  createNewComment() {
-    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
-    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
-
-    const id = String(Math.ceil(Math.random() * 10));
-    const author = `Имя задаётся сервером`;
-    const emotion = emotionElement ? emotionElement.dataset.emotion : ``;
-    const comment = encode(commentInputElement.value);
-    const date = +(new Date()) - Math.random() * 10 * 315360000;
-
-    if (!emotion || !comment) {
-      // TODO: не получилось добавить setCustomValidity(`Добавьте аватар`)
-      return false;
-    }
-
-    return {id, author, comment, date, emotion};
-  }
-
-  resetAddComment() {
-    // console.log(this._element); // null
-    const commentInputElement = this._element.querySelector(`.film-details__comment-input`);
-    commentInputElement.value = ``;
-    const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
-
-    if (emotionElement) {
-      emotionElement.remove();
-    }
-  }
-
-  setAddCommentListener(cb) {
-    const commentInputElement = this.getElement().querySelector(`.film-details__comment-input`);
-    commentInputElement.addEventListener(`keydown`, cb);
-
-    this._setCommentListener = cb;
   }
 }
