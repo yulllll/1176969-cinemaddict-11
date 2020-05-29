@@ -164,9 +164,9 @@ export default class MovieController {
         const newFilm = FilmModel.clone(this._movie);
 
         this._api.createComment(this._movie.id, newComment)
-          .then((comments) => {
+          .then((commentsData) => {
             newFilm.comments = comments.map((comment) => comment.id);
-            this._onCommentChange(this, this._movie, newFilm, comments, modalElementScrollTop);
+            this._onCommentChange(this, this._movie, newFilm, commentsData, modalElementScrollTop);
           })
           .catch(() => {
             movieDetailsComponent.setRedFrameTextCommentField();

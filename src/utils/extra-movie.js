@@ -15,4 +15,4 @@ export const getExtraData = (movies, count) => {
     topRated: maxMovieRatingsData,
     mostCommented: maxMovieCommentsData,
   };
-}
+};
