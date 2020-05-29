@@ -79,13 +79,6 @@ export const STATUS_CODE = {
   MULTIPLE_CHOICES: 300,
 };
 
-export const KeyboardKey = {
-  ESCAPE: `Escape`,
-  ESC: `Esc`,
-  ENTER: `Enter`,
-  COMMAND: `metaKey`,
-};
-
 export const COMMENT_BUTTON_STATUS = {
   DELETE: `Delete`,
   DELETING: `Deleting...`,
@@ -94,5 +87,4 @@ export const COMMENT_BUTTON_STATUS = {
 export const KEY_CODE = {
   ESCAPE: 27,
   ENTER: 13,
-
 };
