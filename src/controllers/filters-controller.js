@@ -11,7 +11,6 @@ export default class FiltersController {
     this._commentsModel = commentsModel;
 
     this._api = api;
-    this._movies = null;
     this._filterMovies = null;
     this._filtersComponent = null;
     this._filtersOldComponent = null;

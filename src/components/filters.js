@@ -9,6 +9,7 @@ export default class Filters extends AbstractSmartComponent {
     this._movies = movies;
     this._activeType = activeType;
     this._menuItems = [];
+    this._noActiveItem = null;
 
     this._onFilterChange = null;
   }
@@ -19,6 +20,13 @@ export default class Filters extends AbstractSmartComponent {
 
   setFilterChangeListener(cb) {
     this.getElement().addEventListener(`click`, (evt) => {
+      const targetFilterName = evt.target.textContent.replace(/\d/g, ``).trim();
+      const isNoActiveItem = this._noActiveItem === targetFilterName;
+
+      if (isNoActiveItem) {
+        evt.preventDefault();
+      }
+
       const filterType = evt.target.textContent.replace(/\d/g, ``).trim();
       cb(filterType);
     });
@@ -59,8 +67,19 @@ export default class Filters extends AbstractSmartComponent {
 
   _getFilterItems(items) {
     return items.map((item) => {
+      let isActiveStatusClass = null;
+
+      if (item.isActive) {
+        isActiveStatusClass = `main-navigation__item--active`;
+      } else if (!item.count) {
+        isActiveStatusClass = `main-navigation__item--no-active`;
+        this._noActiveItem = item.item.replace(/\d/g, ``).trim();
+      } else {
+        isActiveStatusClass = ``;
+      }
+
       return (
-        `<a href="#${item.href}" class="main-navigation__${item.className} ${item.isActive ? `main-navigation__item--active` : `main-navigation__item--no-active`}">${item.item}<span class="main-navigation__item-count">${item.count}</span></a>`
+        `<a ${item.count ? `href="#${item.href}"` : ``} class="main-navigation__${item.className} ${isActiveStatusClass}">${item.item}<span class="main-navigation__item-count">${item.count}</span></a>`
       );
     }).join(``);
   }
