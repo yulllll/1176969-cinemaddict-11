@@ -140,15 +140,12 @@ export default class MovieDetails extends AbstractSmartComponent {
 
     this._movie = movie;
     this._comments = comments;
-
     this._element = this.getElement();
 
     this._onCloseMovieDetailsButtonClick = null;
     this._onWatchlistMovieControllerClick = null;
     this._onWatchedMovieControllerClick = null;
     this._onFavoriteMovieControllerClick = null;
-    this._deleteButtonListener = null;
-    this._setCommentListener = null;
     this._activeDeleteCommentButton = null;
     this._activeDeleteComment = null;
     this._activeTextCommentField = null;
@@ -166,8 +163,6 @@ export default class MovieDetails extends AbstractSmartComponent {
     this.setAddWatchListClickListener(this._onWatchlistMovieControllerClick);
     this.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
     this.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
-    this.setDeleteCommentButtonClickListener(this._deleteCommentButtonClickListener);
-    this.setAddNewCommentListener(this._addNewCommentListener);
     this._setAddEmotionInNewComment();
   }
 
@@ -204,8 +199,6 @@ export default class MovieDetails extends AbstractSmartComponent {
         cb(activeDeleteCommentId);
       }));
     }
-
-    this._deleteCommentButtonClickListener = cb;
   }
 
   setAddNewCommentListener(cb) {
@@ -220,8 +213,6 @@ export default class MovieDetails extends AbstractSmartComponent {
         cb(newComment);
       }
     });
-
-    this._addNewCommentListener = cb;
   }
 
   resetAddComment() {
@@ -265,12 +256,13 @@ export default class MovieDetails extends AbstractSmartComponent {
     const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
 
     const comment = encode(commentInputElement.value);
-    const emotion = emotionElement.dataset.emotion;
-    const date = new Date();
+    const emotion = emotionElement ? emotionElement.dataset.emotion : (this.setRedFrameTextCommentField(), this.shake());
 
     if (!emotion || !comment) {
       return null;
     }
+
+    const date = new Date();
 
     return {
       comment,
