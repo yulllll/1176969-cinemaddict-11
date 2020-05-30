@@ -165,7 +165,7 @@ export default class MovieController {
 
         this._api.createComment(this._movie.id, newComment)
           .then((commentsData) => {
-            newFilm.comments = comments.map((comment) => comment.id);
+            newFilm.comments = commentsData.map((comment) => comment.id);
             this._onCommentChange(this, this._movie, newFilm, commentsData, modalElementScrollTop);
           })
           .catch(() => {
