@@ -267,9 +267,16 @@ export default class MovieDetails extends AbstractSmartComponent {
     const emotionElement = this._element.querySelector(`.film-details__add-emoji-label`).firstElementChild;
 
     const comment = encode(commentInputElement.value);
-    const emotion = emotionElement.dataset.emotion;
+    let emotion;
     const date = new Date();
 
+    if (emotionElement) {
+      emotion = emotionElement.dataset.emotion;
+    } else {
+      this.setRedFrameTextCommentField();
+      this.shake();
+    }
+    // const emotion = emotionElement.dataset.emotion;
     if (!emotion || !comment) {
       return null;
     }
