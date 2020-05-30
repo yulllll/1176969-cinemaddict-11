@@ -147,11 +147,13 @@ export default class MovieDetails extends AbstractSmartComponent {
     this._onWatchlistMovieControllerClick = null;
     this._onWatchedMovieControllerClick = null;
     this._onFavoriteMovieControllerClick = null;
-    this._deleteButtonListener = null;
-    this._setCommentListener = null;
+    // this._deleteButtonListener = null;
+    // this._setCommentListener = null;
     this._activeDeleteCommentButton = null;
     this._activeDeleteComment = null;
     this._activeTextCommentField = null;
+    // this._deleteCommentButtonClickListener = null;
+    // this._addNewCommentListener = null;
 
     this._setAddEmotionInNewComment();
     this.recoveryListeners();
@@ -166,8 +168,8 @@ export default class MovieDetails extends AbstractSmartComponent {
     this.setAddWatchListClickListener(this._onWatchlistMovieControllerClick);
     this.setAddWatchedClickListener(this._onWatchedMovieControllerClick);
     this.setAddFavoriteClickListener(this._onFavoriteMovieControllerClick);
-    this.setDeleteCommentButtonClickListener(this._deleteCommentButtonClickListener);
-    this.setAddNewCommentListener(this._addNewCommentListener);
+    // this.setDeleteCommentButtonClickListener(this._deleteCommentButtonClickListener);
+    // this.setAddNewCommentListener(this._addNewCommentListener);
     this._setAddEmotionInNewComment();
   }
 
@@ -205,7 +207,7 @@ export default class MovieDetails extends AbstractSmartComponent {
       }));
     }
 
-    this._deleteCommentButtonClickListener = cb;
+    // this._deleteCommentButtonClickListener = cb;
   }
 
   setAddNewCommentListener(cb) {
@@ -221,7 +223,7 @@ export default class MovieDetails extends AbstractSmartComponent {
       }
     });
 
-    this._addNewCommentListener = cb;
+    // this._addNewCommentListener = cb;
   }
 
   resetAddComment() {
