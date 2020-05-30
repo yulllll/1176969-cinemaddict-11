@@ -1,68 +1,71 @@
-export default class MovieModel {
-  constructor(movie) {
-    this.id = movie[`id`];
-    this.comments = movie[`comments`];
+export default class Film {
+  constructor(data) {
+    this.id = data[`id`];
+    this.comments = data[`comments`];
     this.movieInfo = {
-      title: movie[`film_info`][`title`],
-      altTitle: movie[`film_info`][`alternative_title`],
-      totalRating: movie[`film_info`][`total_rating`],
-      poster: movie[`film_info`][`poster`],
-      ageRating: movie[`film_info`][`age_rating`],
-      director: movie[`film_info`][`director`],
-      writers: movie[`film_info`][`writers`],
-      actors: movie[`film_info`][`actors`],
+      title: data[`film_info`][`title`],
+      altTitle: data[`film_info`][`alternative_title`],
+      totalRating: data[`film_info`][`total_rating`],
+      poster: data[`film_info`][`poster`],
+      ageRating: data[`film_info`][`age_rating`],
+      director: data[`film_info`][`director`],
+      writers: data[`film_info`][`writers`],
+      actors: data[`film_info`][`actors`],
       release: {
-        date: new Date(movie[`film_info`][`release`][`date`]),
-        country: movie[`film_info`][`release`][`release_country`],
+        date: new Date(data[`film_info`][`release`][`date`]),
+        country: data[`film_info`][`release`][`release_country`],
       },
-      runtime: movie[`film_info`][`runtime`],
-      genres: movie[`film_info`][`genre`],
-      description: movie[`film_info`][`description`],
+      runtime: data[`film_info`][`runtime`],
+      genres: data[`film_info`][`genre`],
+      description: data[`film_info`][`description`],
     };
     this.userDetails = {
-      isWatchlist: Boolean(movie[`user_details`][`watchlist`]),
-      isWatched: Boolean(movie[`user_details`][`already_watched`]),
-      watchingDate: new Date(movie[`user_details`][`watching_date`]),
-      isFavorite: Boolean(movie[`user_details`][`watchlist`]),
+      isWatchlist: Boolean(data[`user_details`][`watchlist`]),
+      isWatched: Boolean(data[`user_details`][`already_watched`]),
+      watchingDate: new Date(data[`user_details`][`watching_date`]),
+      isFavorite: Boolean(data[`user_details`][`favorite`]),
     };
   }
 
-  static toRAW(movie) {
+  toRAW() {
     return {
       "id": this.id,
-      "comments": movie.comments,
+      "comments": this.comments,
       "film_info": {
-        "title": movie.movieInfo.title,
-        "alternative_title": movie.movieInfo.altTitle,
-        "total_rating": movie.movieInfo.totalRating,
-        "poster": movie.movieInfo.poster,
-        "age_rating": movie.movieInfo.ageRating,
-        "director": movie.movieInfo.director,
-        "writers": movie.movieInfo.writers,
-        "actors": movie.movieInfo.actors,
+        "title": this.movieInfo.title,
+        "alternative_title": this.movieInfo.altTitle,
+        "total_rating": this.movieInfo.totalRating,
+        "poster": this.movieInfo.poster,
+        "age_rating": this.movieInfo.ageRating,
+        "director": this.movieInfo.director,
+        "writers": this.movieInfo.writers,
+        "actors": this.movieInfo.actors,
         "release": {
-          "date": movie.movieInfo.release.date,
-          "release_country": movie.movieInfo.release.country
+          "date": this.movieInfo.release.date,
+          "release_country": this.movieInfo.release.country,
         },
-        "runtime": movie.movieInfo.runtime,
-        "genre": movie.movieInfo.genres,
-        "description": movie.movieInfo.description,
+        "runtime": this.movieInfo.runtime,
+        "genre": this.movieInfo.genres,
+        "description": this.movieInfo.description,
       },
       "user_details": {
-        "watchlist": movie.userDetails.isWatchlist,
-        "already_watched": movie.userDetails.isWatched,
-        "watching_date": movie.userDetails.watchingDate,
-        "favorite": movie.userDetails.isFavorite
-      }
+        "watchlist": this.userDetails.isWatchlist,
+        "already_watched": this.userDetails.isWatched,
+        "watching_date": this.userDetails.watchingDate,
+        "favorite": this.userDetails.isFavorite,
+      },
     };
   }
 
-
-  static parseMovie(movie) {
-    return new MovieModel(movie);
+  static parseFilm(data) {
+    return new Film(data);
   }
 
-  static parseMovies(movies) {
-    return movies.map(MovieModel.parseMovie);
+  static parseFilms(data) {
+    return data.map(Film.parseFilm);
+  }
+
+  static clone(data) {
+    return new Film(data.toRAW());
   }
 }

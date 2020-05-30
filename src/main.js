@@ -1,58 +1,39 @@
-// import {generateMovies} from "./mock/movie.js";
-import {render, remove} from "./utils/render.js";
-// import {MOVIE_CARD_COUNT} from "./const.js";
+import API from "./api/api.js";
+import LoadingComponent from "./components/loading";
 import UserProfileComponent from "./components/user-profile.js";
-import FooterStatisticsComponent from "./components/footer";
+import FooterComponent from "./components/footer";
+import SectionStatisticsComponent from "./components/statistics/section-statistics.js";
 import PageController from "./controllers/page-controller.js";
 import FiltersController from "./controllers/filters-controller.js";
 import MoviesModel from "./models/movies-model.js";
-import SectionStatisticsComponent from "./components/statistics/section-statistics.js";
-import API from "./api/api.js";
-import LoadingComponent from "./components/loading";
-
-// const moviesData = generateMovies(MOVIE_CARD_COUNT);
-
-// GET /movies Authorization: Basic kTy9gIdsz2317rD
-// PUT /movies Authorization: Basic er883jdzbdw
-// Синхронизация с сервером /movies/sync Basic kTy9gIdsz2317rD
-
-// GET /comments/: film_id Authorization: Basic er883jdzbdw
-// POST /comments/: film_id Authorization: Basic er883jdzbdw
-// DELETE /comments/: comment_id Authorization: Basic er883jdzbdw
-
+import CommentsModel from "./models/comments-model";
+import {render, remove} from "./utils/render.js";
 
 const AUTHORIZATION = `Basic er883jdzbdw`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const api = new API(END_POINT, AUTHORIZATION);
 
+const loadingComponent = new LoadingComponent();
+const userProfileComponent = new UserProfileComponent();
+const footerComponent = new FooterComponent();
+let statisticsComponent = null;
+
+const moviesModel = new MoviesModel();
+const commentsModel = new CommentsModel();
+
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const footerElement = document.querySelector(`.footer`);
 
-// const userProfileComponent = new UserProfileComponent(moviesData);
-// const footerStatisticsComponent = new FooterStatisticsComponent(moviesData);
+render(headerElement, userProfileComponent);
+render(mainElement, loadingComponent);
+render(footerElement.querySelector(`.footer__statistics`), footerComponent);
 
-const loadingComponent = new LoadingComponent();
-const userProfileComponent = new UserProfileComponent();
+const pageController = new PageController(mainElement, moviesModel, commentsModel, api);
+const filtersController = new FiltersController(mainElement, moviesModel, commentsModel, api);
 
-const moviesModel = new MoviesModel();
-
-const pageController = new PageController(mainElement, moviesModel, api);
-const filtersController = new FiltersController(mainElement, moviesModel);
-
-
-// const statisticsComponent = new SectionStatisticsComponent(moviesData);
-
-// render(headerElement, userProfileComponent);
-// render(footerElement.querySelector(`.footer__statistics`), footerStatisticsComponent);
-// render(mainElement, statisticsComponent);
-
-// moviesModel.setMovies(moviesData);
-// filtersController.render();
-// pageController.render();
-
-let statisticsComponent = null;
-mainElement.addEventListener(`click`, (evt) => {
+// TODO: Подписываемся на кнопки фильтрации и статистики
+const onMainElementFiltersButtonClick = (evt) => {
   const statsButton = evt.target.closest(`.main-navigation__additional`);
   const filterButton = evt.target.closest(`.main-navigation__item`);
 
@@ -67,41 +48,49 @@ mainElement.addEventListener(`click`, (evt) => {
         remove(statisticsComponent);
       }
       statisticsComponent = new SectionStatisticsComponent(moviesModel);
+      mainElement.querySelector(`.main-navigation__additional`)
+        .classList.add(`main-navigation__additional--active`);
       render(mainElement, statisticsComponent);
       break;
     case filterButton:
       if (statisticsComponent) {
         remove(statisticsComponent);
+        mainElement.querySelector(`.main-navigation__additional`)
+          .classList.remove(`main-navigation__additional--active`);
       }
       pageController.show();
       break;
   }
-});
+};
 
-render(headerElement, userProfileComponent);
-render(mainElement, loadingComponent);
+mainElement.addEventListener(`click`, onMainElementFiltersButtonClick);
 
+// TODO: Запрос на сервер и отрисовываем основной контент
 api.getMovies()
-  .then((moviesData) => {
-    moviesData.map((movie) => {
-      return api.getComments(movie.id).then((comments) => {
-        movie.comments = comments;
-      });
-    });
-
-    // TODO: data
-    // console.log(moviesData);
-
+  .then((movies) => {
+    moviesModel.setMovies(movies);
+    return Promise.all(movies.map((movie) => api.getComments(movie.id)));
+  })
+  .then((comments) => {
+    const movies = moviesModel.getMovies();
+    for (let i = 0; i < movies.length; i++) {
+      commentsModel.setComments(movies[i].id, comments[i]);
+    }
+  })
+  .catch(() => {
+    moviesModel.setMovies([]);
+  })
+  .finally(() => {
     remove(userProfileComponent);
     remove(loadingComponent);
+    remove(footerComponent);
 
-    userProfileComponent.setMovies(moviesData);
-    const footerStatisticsComponent = new FooterStatisticsComponent(moviesData);
-
+    userProfileComponent.setMovies(moviesModel.getMovies());
     render(headerElement, userProfileComponent);
-    render(footerElement.querySelector(`.footer__statistics`), footerStatisticsComponent);
 
-    moviesModel.setMovies(moviesData);
     filtersController.render();
     pageController.render();
+
+    footerComponent.setMovies(moviesModel.getMovies());
+    render(footerElement.querySelector(`.footer__statistics`), footerComponent);
   });

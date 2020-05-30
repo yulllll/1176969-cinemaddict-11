@@ -1,9 +1,9 @@
 import {getCommentTime} from "../../utils/date.js";
-import {EMOTION_NAMES} from "../../const.js";
+import {EMOTION_NAMES, COMMENT_BUTTON_STATUS} from "../../const.js";
 import AbstractSmartComponent from "../abstract/abstract-smart";
 
-const getUserCommentsTemplate = (movie) => {
-  return movie.comments.map(({id, emotion, comment, author, date}) => {
+const getUserCommentsTemplate = (movie, comments) => {
+  return comments.map(({id, emotion, comment, author, date}) => {
     const commentsTime = date ? getCommentTime(date) : ``;
     const commentsEmotionSrc = emotion ? `./images/emoji/${emotion}.png` : ``;
     const commentsEmotionAlt = emotion ? `emoji-${emotion}` : ``;
@@ -18,7 +18,7 @@ const getUserCommentsTemplate = (movie) => {
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${commentsTime}</span>
-                  <button class="film-details__comment-delete">Delete</button>
+                  <button class="film-details__comment-delete">${COMMENT_BUTTON_STATUS.DELETE}</button>
                 </p>
               </div>
             </li>`
@@ -37,9 +37,9 @@ const getNewCommentsTemplate = (emotions) => {
   }).join(`\n`);
 };
 
-const getMovieCommentsTemplate = (movie) => {
+const getMovieCommentsTemplate = (movie, comments) => {
   const movieCommentsLength = movie.comments.length;
-  const userCommentsMarkup = getUserCommentsTemplate(movie);
+  const userCommentsMarkup = getUserCommentsTemplate(movie, comments);
   const newCommentsMarkup = getNewCommentsTemplate(EMOTION_NAMES);
 
   return (
@@ -66,14 +66,14 @@ const getMovieCommentsTemplate = (movie) => {
 };
 
 export default class MovieComments extends AbstractSmartComponent {
-  constructor(movie) {
+  constructor(movie, comments) {
     super();
 
     this._movie = movie;
-    this._element = this.getElement();
+    this._comments = comments;
   }
 
   getTemplate() {
-    return getMovieCommentsTemplate(this._movie);
+    return getMovieCommentsTemplate(this._movie, this._comments);
   }
 }

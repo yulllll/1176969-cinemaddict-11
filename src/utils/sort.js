@@ -7,7 +7,7 @@ export const getSortedMovies = (sortType, movies, from, to) => {
   switch (sortType) {
     case SortType.SORT_DATE:
       sortedMovies = showingMovies.sort((a, b) => {
-        // TODO: перепроверить после получения данных и переписать
+
         const releaseDateA = new Date(a.movieInfo.release.date);
         const releaseDateB = new Date(b.movieInfo.release.date);
 

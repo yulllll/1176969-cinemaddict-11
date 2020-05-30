@@ -1,9 +1,9 @@
 import {FilterTypes} from "../const.js";
 import {getFilterMoviesData} from "../utils/filters.js";
 
-export default class MoviesModel {
+export default class Movies {
   constructor() {
-    this._movies = [];
+    this._films = [];
 
     this._activeFilterType = FilterTypes.ALL;
 
@@ -12,35 +12,23 @@ export default class MoviesModel {
   }
 
   getMovies() {
-    // return this._movies;
-    return getFilterMoviesData(this._movies, this._activeFilterType);
+    return getFilterMoviesData(this._films, this._activeFilterType);
   }
 
-  // getMoviesAll() {
-  //   return this._films;
-  // }
-
-  // getFilterMovies() {
-  //   return getFilterMoviesData(this._movies, this._activeFilterType);
-  // }
-
   setMovies(movieData) {
-    this._movies = Array.from(movieData);
+    this._films = Array.from(movieData);
 
     this._callListeners(this._dataChangeListener);
   }
 
-  updateMovies(id, movie) {
-    const index = this._movies.findIndex((item) => item.id === id);
+  updateFilm(id, film) {
+    const index = this._films.findIndex((filmItem) => filmItem.id === id);
 
     if (index === -1) {
       return false;
     }
 
-    this._movies = [].concat(this._movies.slice(0, index),
-        movie,
-        this._movies.slice(index + 1));
-
+    this._films = [].concat(this._films.slice(0, index), film, this._films.slice(index + 1));
     this._callListeners(this._dataChangeListener);
 
     return true;

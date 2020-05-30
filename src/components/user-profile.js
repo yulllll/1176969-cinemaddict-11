@@ -8,6 +8,10 @@ export default class UserProfile extends AbstractComponent {
     this._movies = null;
   }
 
+  setMovies(movies) {
+    this._movies = movies;
+  }
+
   getTemplate() {
     const userRank = this._movies ? getUserRank(this._movies) : ``;
 
@@ -17,9 +21,5 @@ export default class UserProfile extends AbstractComponent {
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
      </section>`
     );
-  }
-
-  setMovies(movies) {
-    this._movies = movies;
   }
 }
