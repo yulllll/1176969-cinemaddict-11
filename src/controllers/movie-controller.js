@@ -1,9 +1,8 @@
 import MovieDetailsComponent from "../components/modal/movie-details.js";
 import MovieCardComponent from "../components/movies/movie-card";
-import {remove, render, replace} from "../utils/render";
-import {KEY_CODE} from "../const";
-import {ModalMode} from "../const.js";
-import FilmModel from "../models/movie-model";
+import {remove, render, replace} from "../utils/render.js";
+import {KEY_CODE, ModalMode} from "../const.js";
+import MovieModel from "../models/movie-model.js";
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, api, onCommentChange) {
@@ -140,14 +139,14 @@ export default class MovieController {
 
       movieDetailsComponent.disableDeleteButton();
 
-      const newFilms = FilmModel.clone(this._movie);
+      const newMovie = MovieModel.clone(this._movie);
       const newComments = this._comments.filter((comment) => comment.id !== removeCommentId);
 
-      newFilms.comments = newFilms.comments.filter((commentId) => commentId !== removeCommentId);
+      newMovie.comments = newMovie.comments.filter((commentId) => commentId !== removeCommentId);
 
       this._api.deleteComment(removeCommentId)
         .then(() => {
-          this._onCommentChange(this, this._movie, newFilms, newComments, modalElementScrollTop);
+          this._onCommentChange(this, this._movie, newMovie, newComments, modalElementScrollTop);
         })
         .catch(() => {
           movieDetailsComponent.enableDeleteButton();
@@ -161,12 +160,12 @@ export default class MovieController {
 
       if (newComment) {
         movieDetailsComponent.disableActiveTextCommentField();
-        const newFilm = FilmModel.clone(this._movie);
+        const newMovie = MovieModel.clone(this._movie);
 
         this._api.createComment(this._movie.id, newComment)
           .then((commentsData) => {
-            newFilm.comments = commentsData.map((comment) => comment.id);
-            this._onCommentChange(this, this._movie, newFilm, commentsData, modalElementScrollTop);
+            newMovie.comments = commentsData.map((comment) => comment.id);
+            this._onCommentChange(this, this._movie, newMovie, commentsData, modalElementScrollTop);
           })
           .catch(() => {
             movieDetailsComponent.setRedFrameTextCommentField();
@@ -213,21 +212,21 @@ export default class MovieController {
   }
 
   _onWatchlistMovieControllerClick(elementScrollTop) {
-    const newMovie = FilmModel.clone(this._movie);
+    const newMovie = MovieModel.clone(this._movie);
     newMovie.userDetails.isWatchlist = !newMovie.userDetails.isWatchlist;
 
     this._onDataChange(this, this._movie, newMovie, elementScrollTop);
   }
 
   _onWatchedMovieControllerClick(elementScrollTop) {
-    const newMovie = FilmModel.clone(this._movie);
+    const newMovie = MovieModel.clone(this._movie);
     newMovie.userDetails.isWatched = !newMovie.userDetails.isWatched;
 
     this._onDataChange(this, this._movie, newMovie, elementScrollTop);
   }
 
   _onFavoriteMovieControllerClick(elementScrollTop) {
-    const newMovie = FilmModel.clone(this._movie);
+    const newMovie = MovieModel.clone(this._movie);
     newMovie.userDetails.isFavorite = !newMovie.userDetails.isFavorite;
 
     this._onDataChange(this, this._movie, newMovie, elementScrollTop);

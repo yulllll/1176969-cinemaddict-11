@@ -11,6 +11,25 @@ export const ModalMode = {
   MODAL_OPEN: `open`,
 };
 
+export const StatisticFilterName = {
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+  ALL: `all-time`
+};
+
+export const CommentButtonStatus = {
+  DELETE: `Delete`,
+  DELETING: `Deleting...`,
+};
+
+export const StatisticsInfoListTitles = {
+  WATCHED: `You watched`,
+  DURATION: `Total duration`,
+  GENRE: `Top genre`,
+};
+
 export const ExtraListTitles = {
   TOP_RATED: `Top rated`,
   MOST_COMMENTED: `Most commented`,
@@ -42,11 +61,6 @@ export const EMOTION_NAMES = [
   `angry`
 ];
 
-export const LIST_TITLES = {
-  WATCHED: `You watched`,
-  DURATION: `Total duration`,
-  GENRE: `Top genre`,
-};
 
 export const BAR_HEIGHT = 50;
 
@@ -57,14 +71,6 @@ export const SHOW_STATISTICS_PERIOD = {
   WEEK: 7,
   MONTH: 30,
   YEAR: 365,
-};
-
-export const STATISTIC_FILTER_NAMES = {
-  TODAY: `today`,
-  WEEK: `week`,
-  MONTH: `month`,
-  YEAR: `year`,
-  ALL: `all-time`
 };
 
 export const METHOD_RESPONSE_NAMES = {
@@ -79,10 +85,6 @@ export const STATUS_CODE = {
   MULTIPLE_CHOICES: 300,
 };
 
-export const COMMENT_BUTTON_STATUS = {
-  DELETE: `Delete`,
-  DELETING: `Deleting...`,
-};
 
 export const KEY_CODE = {
   ESCAPE: 27,

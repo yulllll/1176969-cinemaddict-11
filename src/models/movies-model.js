@@ -1,7 +1,7 @@
 import {FilterTypes} from "../const.js";
 import {getFilterMoviesData} from "../utils/filters.js";
 
-export default class Movies {
+export default class MoviesModel {
   constructor() {
     this._films = [];
 

@@ -2,8 +2,8 @@ export const getTopGenres = (genres) => {
   let start = {};
   const repeat = {};
 
-  for (let i = 0; i < genres.length; i++) {
-    start = genres[i];
+  for (const genre of genres) {
+    start = genre;
     if (repeat[start]) {
       repeat[start] += 1;
     } else {

@@ -11,12 +11,12 @@ import {getExtraData} from "../utils/extra-movie";
 
 import NormalListComponent from "../components/movies/normal-list/normal-list.js";
 import NormalTitleComponent from "../components/movies/normal-list/normal-title.js";
-import NormalCardContainerComponent from "../components/movies/normal-list/normal-container.js";
-import ShowMoreButtonComponent from "../components/movies/show-more.js";
+import NormalCardContainerComponent from "../components/movies/normal-list/normal-card-container.js";
+import ShowMoreButtonComponent from "../components/movies/show-more-button.js";
 import NoDataComponent from "../components/movies/no-data.js";
 import ExtraListComponent from "../components/movies/extra-list/extra-list.js";
 import ExtraTitleComponent from "../components/movies/extra-list/extra-title.js";
-import ExtraCardContainerComponent from "../components/movies/extra-list/extra-container.js";
+import ExtraCardContainerComponent from "../components/movies/extra-list/extra-card-container.js";
 import SortComponent from "../components/sort.js";
 import MovieContainerComponent from "../components/movies/container.js";
 import MovieController from "./movie-controller.js";

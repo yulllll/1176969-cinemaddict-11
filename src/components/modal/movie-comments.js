@@ -1,5 +1,5 @@
 import {getCommentTime} from "../../utils/date.js";
-import {EMOTION_NAMES, COMMENT_BUTTON_STATUS} from "../../const.js";
+import {EMOTION_NAMES, CommentButtonStatus} from "../../const.js";
 import AbstractSmartComponent from "../abstract/abstract-smart";
 
 const getUserCommentsTemplate = (movie, comments) => {
@@ -18,7 +18,7 @@ const getUserCommentsTemplate = (movie, comments) => {
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${commentsTime}</span>
-                  <button class="film-details__comment-delete">${COMMENT_BUTTON_STATUS.DELETE}</button>
+                  <button class="film-details__comment-delete">${CommentButtonStatus.DELETE}</button>
                 </p>
               </div>
             </li>`

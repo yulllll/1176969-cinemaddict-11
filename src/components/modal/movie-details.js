@@ -3,7 +3,7 @@ import MovieComments from "./movie-comments.js";
 import {encode} from "he";
 import {shaking} from "../../utils/animation.js";
 import {getReleaseDateFormat, getRuntimeFormat} from "../../utils/date.js";
-import {COMMENT_BUTTON_STATUS, KEY_CODE} from "../../const.js";
+import {CommentButtonStatus, KEY_CODE} from "../../const.js";
 
 const getGenresInfoTemplate = (genres) => {
   return genres.map((genre) => {
@@ -227,12 +227,12 @@ export default class MovieDetails extends AbstractSmartComponent {
 
   enableDeleteButton() {
     this._activeDeleteCommentButton.disabled = false;
-    this._activeDeleteCommentButton.textContent = COMMENT_BUTTON_STATUS.DELETE;
+    this._activeDeleteCommentButton.textContent = CommentButtonStatus.DELETE;
   }
 
   disableDeleteButton() {
     this._activeDeleteCommentButton.disabled = true;
-    this._activeDeleteCommentButton.textContent = COMMENT_BUTTON_STATUS.DELETING;
+    this._activeDeleteCommentButton.textContent = CommentButtonStatus.DELETING;
   }
 
   disableActiveTextCommentField() {

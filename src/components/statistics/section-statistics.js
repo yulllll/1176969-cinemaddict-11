@@ -5,7 +5,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import {getUserRank} from "../../utils/user-rank.js";
 import {
   BAR_HEIGHT,
-  STATISTIC_FILTER_NAMES,
+  StatisticFilterName,
 } from "../../const.js";
 import {
   getStatistics,
@@ -23,7 +23,7 @@ export default class SectionStatistics extends AbstractSmartComponent {
 
     this._moviesModel = moviesModel.getMovies();
     this._movies = this._moviesModel;
-    this._activeFilter = STATISTIC_FILTER_NAMES.ALL;
+    this._activeFilter = StatisticFilterName.ALL;
     this._moviesByFilter = [];
 
     this._userRank = null;
@@ -79,7 +79,6 @@ export default class SectionStatistics extends AbstractSmartComponent {
   }
 
   _rerender() {
-    // super.rerender();
     const oldElement = this.getElement();
     const parent = oldElement.parentElement;
 

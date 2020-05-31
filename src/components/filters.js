@@ -1,4 +1,4 @@
-import AbstractSmartComponent from "./abstract/abstract-smart";
+import AbstractSmartComponent from "./abstract/abstract-smart.js";
 import {FilterTypes} from "../const.js";
 import {getFilterMoviesData} from "../utils/filters.js";
 

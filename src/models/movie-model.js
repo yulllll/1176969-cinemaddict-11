@@ -1,4 +1,4 @@
-export default class Film {
+export default class MovieModel {
   constructor(data) {
     this.id = data[`id`];
     this.comments = data[`comments`];
@@ -58,14 +58,14 @@ export default class Film {
   }
 
   static parseFilm(data) {
-    return new Film(data);
+    return new MovieModel(data);
   }
 
   static parseFilms(data) {
-    return data.map(Film.parseFilm);
+    return data.map(MovieModel.parseFilm);
   }
 
   static clone(data) {
-    return new Film(data.toRAW());
+    return new MovieModel(data.toRAW());
   }
 }

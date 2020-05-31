@@ -1,12 +1,12 @@
-import {getRuntimeSeparated} from "./date";
-import {getTopGenres} from "./genres";
-import {SHOW_STATISTICS_PERIOD, STATISTIC_FILTER_NAMES} from "../const";
+import {getRuntimeSeparated} from "./date.js";
+import {getTopGenres} from "./genres.js";
+import {SHOW_STATISTICS_PERIOD, StatisticFilterName} from "../const.js";
 
 export const getStatistics = (movies) => {
-  const inWatchlist = movies.filter((movie) => movie.userDetails.isWatchlist);
-  const watchListLength = inWatchlist.length;
+  const inWatched = movies.filter((movie) => movie.userDetails.isWatched);
+  const watchedMoviesLength = inWatched.length;
 
-  const commonRuntime = inWatchlist.reduce((acc, movie) => {
+  const commonRuntime = inWatched.reduce((acc, movie) => {
     return acc + movie.movieInfo.runtime;
   }, 0);
 
@@ -14,7 +14,7 @@ export const getStatistics = (movies) => {
   const allRuntimeMinutes = getRuntimeSeparated(commonRuntime).minutes;
 
   const moviesWatchListGenres = [];
-  for (const movie of inWatchlist) {
+  for (const movie of inWatched) {
     moviesWatchListGenres.push(movie.movieInfo.genres);
   }
   const movieGenresFlat = moviesWatchListGenres.flat();
@@ -23,7 +23,7 @@ export const getStatistics = (movies) => {
   const topGenresWithIndex = getTopGenres(movieGenresFlat).sortGenresByIndex;
 
   return {
-    watchListLength,
+    watchedMoviesLength,
     allRuntimeHours,
     allRuntimeMinutes,
     topGenre,
@@ -34,32 +34,32 @@ export const getStatistics = (movies) => {
 
 export const getMoviesByStatistics = (target, movies, moviesByFilter, activeFilter, periodDate) => {
   switch (target) {
-    case `today`:
+    case StatisticFilterName.TODAY:
       moviesByFilter = movies.filter((movie) => {
-        activeFilter = STATISTIC_FILTER_NAMES.TODAY;
+        activeFilter = StatisticFilterName.TODAY;
         return movie.userDetails.watchingDate > periodDate.setDate(periodDate.getDate() - SHOW_STATISTICS_PERIOD.TODAY);
       });
       break;
-    case `week`:
+    case StatisticFilterName.WEEK:
       moviesByFilter = movies.filter((movie) => {
-        activeFilter = STATISTIC_FILTER_NAMES.WEEK;
+        activeFilter = StatisticFilterName.WEEK;
         return movie.userDetails.watchingDate > periodDate.setDate(periodDate.getDate() - SHOW_STATISTICS_PERIOD.WEEK);
       });
       break;
-    case `month`:
+    case StatisticFilterName.MONTH:
       moviesByFilter = movies.filter((movie) => {
-        activeFilter = STATISTIC_FILTER_NAMES.MONTH;
+        activeFilter = StatisticFilterName.MONTH;
         return movie.userDetails.watchingDate > periodDate.setDate(periodDate.getDate() - SHOW_STATISTICS_PERIOD.MONTH);
       });
       break;
-    case `year`:
+    case StatisticFilterName.YEAR:
       moviesByFilter = movies.filter((movie) => {
-        activeFilter = STATISTIC_FILTER_NAMES.YEAR;
+        activeFilter = StatisticFilterName.YEAR;
         return movie.userDetails.watchingDate > periodDate.setDate(periodDate.getDate() - SHOW_STATISTICS_PERIOD.YEAR);
       });
       break;
-    case `all-time`:
-      activeFilter = STATISTIC_FILTER_NAMES.ALL;
+    case StatisticFilterName.ALL:
+      activeFilter = StatisticFilterName.ALL;
       moviesByFilter = movies;
       break;
   }
